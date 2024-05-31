@@ -1,10 +1,13 @@
-import React from 'react';
+import { Outlet } from 'react-router-dom';
 import styled from 'styled-components';
 
-function Layout({ children }) {
-  return <Main>{children}</Main>;
+function Layout() {
+  return (
+    <Main>
+      <Outlet />
+    </Main>
+  );
 }
-
 const Main = styled.main`
   background-color: #ccc;
   min-width: 750px;
