@@ -3,9 +3,7 @@ import reset from 'styled-reset';
 
 const GlobalStyle = createGlobalStyle`
   ${reset}
-  *{
-    user-select: none;
-  }
+
 
     `;
 
