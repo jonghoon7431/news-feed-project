@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import supabase from '../../supabaseClient';
-
+import './createpost.css'
 
 function Form() {
   const [name, setName] = useState('');
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [tag, setTag] = useState('');
+  const [tag, setTag] = useState([]);
 
   const handleSubmit = async(e) => {
     e.preventDefault()
@@ -45,20 +45,21 @@ function Form() {
     fetchData();
   }, []);
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <input type="text" placeholder='작성자 이름' value={name} onChange={(e) => {
+    <div style={{maxWidth: '800px', backgroundColor : 'black'}}>
+      <form onSubmit={handleSubmit} className='flex-column'>
+        <input className='w-100' type="text" placeholder='작성자 이름' value={name} onChange={(e) => {
           setName(e.target.value)
         }} />
-        <input type="text" placeholder='제목' value={title} onChange={(e) => {
+        <input className='w-100' type="text" placeholder='제목' value={title} onChange={(e) => {
           setTitle(e.target.value)
         }}/>
-        <textarea placeholder='내용' value={content} onChange={(e) => {
+        <textarea className='w-100' placeholder='내용' value={content} onChange={(e) => {
           setContent(e.target.value)
         }}></textarea>
-        <input type="text" placeholder='#해시태그' value={tag} onChange={(e) => {
+        <input type="text" className='w-100' placeholder='#해시태그' value={tag} onChange={(e) => {
           setTag(e.target.value)
         }} />
+        <button type='button'>태그 등록</button>
         <button type='submit'>저장</button>
       </form>
     </div>
