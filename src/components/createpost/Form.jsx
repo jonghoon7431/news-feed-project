@@ -6,11 +6,10 @@ function Form() {
   const [name, setName] = useState('');
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [tag, setTag] = useState([]);
+  const [tag, setTag] = useState('');
 
   const handleSubmit = async(e) => {
     e.preventDefault()
-
     // 데이터 삽입 처리
     const { data, error } = await supabase
       .from('POSTS')
@@ -31,19 +30,6 @@ function Form() {
     }
   }
 
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const { data, error } = await supabase.from('POSTS').select('*');
-
-      if (error) {
-        console.log(error);
-      } else {
-        console.log(data);
-      }
-    };
-    fetchData();
-  }, []);
   return (
     <div style={{maxWidth: '800px', backgroundColor : 'black'}}>
       <form onSubmit={handleSubmit} className='flex-column'>
