@@ -7,6 +7,8 @@ function Form({navigate}) {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [tag, setTag] = useState([]);
+  const hashTagRef = useRef(null)
+
   const handleSubmit = async(e) => {
     e.preventDefault()
     const { data, error } = await supabase
@@ -22,7 +24,14 @@ function Form({navigate}) {
       setName('')
       setTitle('')
       setContent('')
-      setTag('')
+      setTag([])
+    }
+  }
+  const showHashTag = () => {
+    const hashTag = hashTagRef.current.value.trim()
+    if(hashTag !== '') {
+      setTag([...tag, hashTag])
+      hashTagRef.current.value = ''
     }
   }
   return (
@@ -43,10 +52,15 @@ function Form({navigate}) {
         <textarea className=''  style={{resize:'none', width:'100%', height:'300px', padding:'15px', fontSize:'16px', margin :'0 0 10px'}} placeholder='내용' value={content} onChange={(e) => {
           setContent(e.target.value)
         }}></textarea>
-        <input className='' style={{width:'30%', padding:'10px'}}  type="text"  placeholder='#해시태그' value={tag} onChange={(e) => {
-          setTag(e.target.value)
-        }} />
-        <button className='' type='button'>태그 등록</button>
+        <input className='' ref={hashTagRef} style={{width:'30%', padding:'10px'}}  type="text"  placeholder='#해시태그'/>
+        <button className='' type='button' onClick={showHashTag} >태그 등록</button>
+        <ul>
+          {
+            tag.map((item, index) => (
+              <li key={index}>{item}</li>
+            ))
+          }
+        </ul>
       </form>
     </div>
   )
