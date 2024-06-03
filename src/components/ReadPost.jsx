@@ -6,6 +6,8 @@ import supabase from '../supabaseClient';
 function ReadPost({ setIsEdit, targetData, paramsId }) {
   const isLogin = false;
 
+  // const [togleLike, setTogleLike] = useState(0)
+
   const { title, content, name, view, date, time, like, tag } = targetData;
 
   const navigate = useNavigationType();
@@ -50,8 +52,8 @@ function ReadPost({ setIsEdit, targetData, paramsId }) {
 
       <ReactionSection>
         <ReactionDiv>
-          조회수 : {view} <button>like</button>
-          <FontAwesomeIcon icon="fa-regular fa-heart" />
+          조회수 : {view}
+          <FontAwesomeIcon icon="fa-solid fa-heart" style={{ color: 'black', cursor: 'pointer' }} />
           {like}
         </ReactionDiv>
         {/* TODO 태그 저장 방식 변경해야함 */}#{tag}
