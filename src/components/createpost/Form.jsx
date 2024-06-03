@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import supabase from '../../supabaseClient';
 import './createpost.css'
 
-function Form() {
+function Form({navigate}) {
   const [name, setName] = useState('');
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [tag, setTag] = useState('');
-  
+  const [tag, setTag] = useState([]);
   const handleSubmit = async(e) => {
     e.preventDefault()
     const { data, error } = await supabase
@@ -26,12 +25,13 @@ function Form() {
       setTag('')
     }
   }
-
   return (
     <div>
       <form onSubmit={handleSubmit} className='flex-column' >
         <div style={{height:'40px', display:'flex', flexDirection:'row', alignItems:'center', justifyContent:'space-between'}}>
-          <button className='' style={{margin:'10px 20px 0'}}  type='button'>뒤로가기</button>
+          <button className='' style={{margin:'10px 20px 0'}}  type='button' onClick={() => {
+            navigate('/')
+          }}>뒤로가기</button>
           <button className='' style={{margin:'10px 20px 0 0'}}  type='submit'>저장</button>
         </div>
         <input style={{padding : '15px', fontSize:'18px', margin:'10px 0'}} type="text" placeholder='작성자 이름' value={name} onChange={(e) => {
@@ -46,7 +46,7 @@ function Form() {
         <input className='' style={{width:'30%', padding:'10px'}}  type="text"  placeholder='#해시태그' value={tag} onChange={(e) => {
           setTag(e.target.value)
         }} />
-        <button className=''  type='button'>태그 등록</button>
+        <button className='' type='button'>태그 등록</button>
       </form>
     </div>
   )
