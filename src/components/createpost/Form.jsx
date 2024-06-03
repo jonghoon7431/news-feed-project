@@ -31,18 +31,18 @@ function Form() {
   }
 
   return (
-    <div style={{maxWidth: '800px', backgroundColor : 'black'}}>
-      <form onSubmit={handleSubmit} className='flex-column'>
-        <input className='w-100' type="text" placeholder='작성자 이름' value={name} onChange={(e) => {
+    <div>
+      <form onSubmit={handleSubmit} >
+        <input type="text" placeholder='작성자 이름' value={name} onChange={(e) => {
           setName(e.target.value)
         }} />
-        <input className='w-100' type="text" placeholder='제목' value={title} onChange={(e) => {
+        <input  type="text" placeholder='제목' value={title} onChange={(e) => {
           setTitle(e.target.value)
         }}/>
-        <textarea className='w-100' placeholder='내용' value={content} onChange={(e) => {
+        <textarea  placeholder='내용' value={content} onChange={(e) => {
           setContent(e.target.value)
         }}></textarea>
-        <input type="text" className='w-100' placeholder='#해시태그' value={tag} onChange={(e) => {
+        <input type="text"  placeholder='#해시태그' value={tag} onChange={(e) => {
           setTag(e.target.value)
         }} />
         <button type='button'>태그 등록</button>
