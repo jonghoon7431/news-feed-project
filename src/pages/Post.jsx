@@ -1,36 +1,37 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import EditPost from '../components/EditPost';
+import ReadPost from '../components/ReadPost';
 import supabase from '../supabaseClient';
 
 function Post() {
-  const [targetData, setTargetData] = useState([]);
-  const paramsId = useParams().id;
+  const [isEdit, setIsEdit] = useState(false);
+
+  const [targetData, setTargetData] = useState({});
+  const paramsId = Number(useParams().id);
+  console.log(targetData);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchThisData = async () => {
       const { data, error } = await supabase.from('POSTS').select('*').eq('id', paramsId);
       if (error) {
         console.log(error);
       } else {
-        setTargetData(data);
+        setTargetData(data[0]);
       }
     };
 
-    fetchData();
+    fetchThisData();
   }, []);
 
   return (
-    <div>
-      {/* <h1>{targetData.title}</h1> */}
-      {targetData.map((data) => {
-        return (
-          <div key={data.id}>
-            <h1>{data.title}</h1>
-          </div>
-        );
-      })}
-      <h1>dd</h1>
-    </div>
+    <>
+      {isEdit ? (
+        <EditPost targetData={targetData} setTargetData={setTargetData} setIsEdit={setIsEdit} paramsId={paramsId} />
+      ) : (
+        <ReadPost isEdit={isEdit} setIsEdit={setIsEdit} targetData={targetData} paramsId={paramsId} />
+      )}
+    </>
   );
 }
 
