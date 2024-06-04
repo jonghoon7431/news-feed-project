@@ -1,21 +1,31 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import supabase from '../supabaseClient';
 
 function ReadPost({ setIsEdit, targetData, paramsId }) {
-  // 로그인 상태 임시지정(true)
-  const isLogIn = true;
-
-  const { id, title, content, name, view, date, time, like, tag, image_url = '' } = targetData;
-
   const navigate = useNavigate();
+  const signedInUser = useSelector((state) => state.auth.signedInUser);
+
+  console.log(signedInUser);
+  //!!: 값을 boolean 형태로
+  const [isLoggedIn, setIsLoggedIn] = useState(!!signedInUser);
+  const [userId, setUserId] = useState(signedInUser.id || null);
+
+  console.log(userId);
+  useEffect(() => {
+    setIsLoggedIn(!!signedInUser);
+    setUserId(signedInUser?.id || null);
+  }, [signedInUser]);
+
+  const { id, title, content, name, view, date, time, like, tag, image_url } = targetData;
 
   // 삭제
   const handleDelete = async () => {
     if (!confirm('정말 삭제하시겠습니까?')) return;
-    if (!isLogIn) return;
+    if (!isLoggedIn) return;
 
     const { error } = await supabase.from('POSTS').delete().eq('id', paramsId);
 
@@ -29,15 +39,14 @@ function ReadPost({ setIsEdit, targetData, paramsId }) {
   };
 
   // Like
-  // user_id 임시지정
-  const userId = '1c0a7dce-a433-4150-9acd-feaf9b51f218';
   const postId = paramsId;
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(like);
 
   useEffect(() => {
     const checkLiked = async () => {
-      //upsert로 변경?
+      if (!isLoggedIn) return;
+
       const { data, error } = await supabase
         .from('LIKES')
         .select('is_liked')
@@ -52,10 +61,8 @@ function ReadPost({ setIsEdit, targetData, paramsId }) {
       }
     };
 
-    if (isLogIn) {
-      checkLiked();
-    }
-  }, [isLogIn, postId, userId]);
+    checkLiked();
+  }, [isLoggedIn, postId, userId]);
 
   useEffect(() => {
     const fetchLikeCount = async () => {
@@ -69,10 +76,10 @@ function ReadPost({ setIsEdit, targetData, paramsId }) {
     };
 
     fetchLikeCount();
-  }, [liked, postId]);
+  }, [liked, paramsId]);
 
   const isLikedHandler = async () => {
-    if (!isLogIn) return alert('로그인 후 이용 가능합니다');
+    if (!isLoggedIn) return alert('로그인 후 이용 가능합니다');
 
     const newLikedStatus = !liked;
     setLiked(newLikedStatus);
@@ -189,7 +196,7 @@ function ReadPost({ setIsEdit, targetData, paramsId }) {
           : null}
 
         <p>{content}</p>
-        <EditButtonDiv $isLogIn={isLogIn}>
+        <EditButtonDiv $isLogIn={isLoggedIn}>
           <button onClick={() => setIsEdit(true)}>수정</button> | <button onClick={handleDelete}>삭제</button>
         </EditButtonDiv>
       </ContentSection>
