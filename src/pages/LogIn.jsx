@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { supabase } from '../supabaseClient';
 import { Link, useNavigate } from 'react-router-dom';
 import SignInBtn from '../components/SignInBtn';
+import Header from '../components/Header';
 
 function LogIn() {
   const [email, setEmail] = useState('');
@@ -30,6 +31,7 @@ function LogIn() {
 
   return (
     <main>
+      <Header />
       <form onSubmit={handleSignIn}>
         <label>
           이메일:

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { supabase } from '../supabaseClient';
 import { Link } from 'react-router-dom';
+import Header from '../components/Header';
 
 function SignUp() {
   const [email, setEmail] = useState('');
@@ -48,6 +49,7 @@ function SignUp() {
 
   return (
     <main>
+      <Header />
       <form onSubmit={handleSignUp}>
         <label>
           이메일:
