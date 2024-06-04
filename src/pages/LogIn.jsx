@@ -24,6 +24,8 @@ function LogIn() {
     } else {
       setError('');
       alert('로그인되었습니다.');
+      setEmail('');
+      setPassword('');
     }
   };
 
