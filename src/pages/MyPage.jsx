@@ -1,7 +1,14 @@
 import styled from 'styled-components';
 import PostItem from '../components/PostItem';
+import { useState, useEffect } from 'react';
 
 function MyPage() {
+  const [myPosts, setMyPosts] = useState([]);
+
+  useEffect(()=> {
+    (async ()=> setMyPosts(await))
+  })
+
   return (
     <MyPageCon>
       <MyPageArea>
