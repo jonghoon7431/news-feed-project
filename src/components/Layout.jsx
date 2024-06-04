@@ -1,4 +1,4 @@
-import { Link, Outlet } from 'react-router-dom';
+import { Link, Outlet, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import Footer from './Footer';
 import Header from './Header';
@@ -6,12 +6,15 @@ import Header from './Header';
 const isLoggedIn = false; // 임시 변수
 
 function Layout() {
+  const location = useLocation();
   return (
     <Main>
       {location.pathname === '/' ? (
         <Header>
           <HomeButtons isLogIn={isLoggedIn} />
         </Header>
+      ) : location.pathname === '/create_post' ? (
+        ''
       ) : (
         <Header />
       )}
