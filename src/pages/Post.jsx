@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import EditPost from '../components/EditPost';
+import Footer from '../components/Footer';
+import Header from '../components/Header';
 import ReadPost from '../components/ReadPost';
 import supabase from '../supabaseClient';
 
@@ -9,7 +11,6 @@ function Post() {
 
   const [targetData, setTargetData] = useState({});
   const paramsId = Number(useParams().id);
-  console.log(targetData);
 
   useEffect(() => {
     const fetchThisData = async () => {
@@ -26,11 +27,13 @@ function Post() {
 
   return (
     <>
+      <Header />
       {isEdit ? (
         <EditPost targetData={targetData} setTargetData={setTargetData} setIsEdit={setIsEdit} paramsId={paramsId} />
       ) : (
         <ReadPost isEdit={isEdit} setIsEdit={setIsEdit} targetData={targetData} paramsId={paramsId} />
       )}
+      <Footer />
     </>
   );
 }

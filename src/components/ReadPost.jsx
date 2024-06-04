@@ -1,18 +1,18 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useState } from 'react';
-import { useNavigationType } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import supabase from '../supabaseClient';
 
 function ReadPost({ setIsEdit, targetData, paramsId }) {
+  // 로그인 상태 임시지정(true)
   const isLogIn = true;
-  const [isLiked, setIsLiked] = useState(false);
 
-  const { title, content, name, view, date, time, like, tag } = targetData;
+  const { id, title, content, name, view, date, time, like, tag, image_url = '' } = targetData;
 
-  const navigate = useNavigationType();
+  const navigate = useNavigate();
 
-  //삭제
+  // 삭제
   const handleDelete = async () => {
     if (!confirm('정말 삭제하시겠습니까?')) return;
     if (!isLogIn) return;
@@ -28,30 +28,148 @@ function ReadPost({ setIsEdit, targetData, paramsId }) {
     }
   };
 
-  //좋아요
-  //user_id 임시설정
-  const user_id = 'test';
+  // Like
+  // user_id 임시지정
+  const userId = '1c0a7dce-a433-4150-9acd-feaf9b51f218';
+  const postId = paramsId;
+  const [liked, setLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(like);
+
+  useEffect(() => {
+    const checkLiked = async () => {
+      //upsert로 변경?
+      const { data, error } = await supabase
+        .from('LIKES')
+        .select('is_liked')
+        .eq('post_id', postId)
+        .eq('user_id', userId)
+        .single();
+
+      if (error) {
+        console.log(error);
+      } else {
+        setLiked(data.is_liked);
+      }
+    };
+
+    if (isLogIn) {
+      checkLiked();
+    }
+  }, [isLogIn, postId, userId]);
+
+  useEffect(() => {
+    const fetchLikeCount = async () => {
+      const { data, error } = await supabase.from('POSTS').select('like').eq('id', paramsId).single();
+
+      if (error) {
+        console.log(error);
+      } else {
+        setLikeCount(data.like);
+      }
+    };
+
+    fetchLikeCount();
+  }, [liked, postId]);
 
   const isLikedHandler = async () => {
     if (!isLogIn) return alert('로그인 후 이용 가능합니다');
 
-    setIsLiked(!isLiked);
+    const newLikedStatus = !liked;
+    setLiked(newLikedStatus);
 
-    // likes 테이블에 userid, postid 둘 다 일치하는 항목 있으면 update
-    // 없으면 insert
+    const { error } = await supabase
+      .from('LIKES')
+      .upsert(
+        {
+          post_id: postId,
+          user_id: userId,
+          is_liked: newLikedStatus,
+        },
+        { onConflict: ['post_id', 'user_id'] }
+      )
+      .select();
 
-    // if()
-    const { data, error } = await supabase.from('LIKES').insert({
-      post_id: paramsId,
-      user_id,
-      is_liked: isLiked,
-    });
     if (error) {
       console.log(error);
     } else {
-      console.log(data);
+      const { data: postData, error: postError } = await supabase
+        .from('POSTS')
+        .select('like')
+        .eq('id', paramsId)
+        .single();
+
+      if (postError) {
+        console.log(postError);
+      } else {
+        const newLikeCount = newLikedStatus ? postData.like + 1 : postData.like - 1;
+
+        const { data: updatedPostData, error: updateError } = await supabase
+          .from('POSTS')
+          .update({ like: newLikeCount })
+          .eq('id', paramsId)
+          .select()
+          .single();
+
+        if (updateError) {
+          console.log(updateError);
+        } else {
+          setLikeCount(updatedPostData.like);
+        }
+      }
     }
   };
+
+  //이미지 관련
+  const [imageUrls, setImageUrls] = useState([]);
+
+  useEffect(() => {
+    const getImages = async () => {
+      const urls = [];
+
+      if (!targetData.image_url || targetData.image_url.length === 0) {
+        setImageUrls([]);
+        return;
+      }
+
+      for (const imageUrl of targetData.image_url) {
+        try {
+          const { data, error } = await supabase.storage.from('images').getPublicUrl(imageUrl);
+
+          if (error) {
+            console.log(error);
+          } else {
+            urls.push(data.publicUrl);
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
+
+      setImageUrls(urls);
+    };
+
+    getImages();
+  }, [targetData.image_url]);
+
+  // View 증가
+  // 즉시 적용은 안 되고, 새로고침하거나 다른 페이지로 이동하면 적용됨
+  useEffect(() => {
+    const updateView = async () => {
+      try {
+        const { error } = await supabase
+          .from('POSTS')
+          .update({ view: view + 1 })
+          .eq('id', paramsId)
+          .select();
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    if (view !== undefined) {
+      updateView();
+    }
+  }, [paramsId, view]);
 
   return (
     <Container>
@@ -66,18 +184,21 @@ function ReadPost({ setIsEdit, targetData, paramsId }) {
       </TitleSection>
 
       <ContentSection>
+        {imageUrls.length > 0
+          ? imageUrls.map((url, index) => <img key={index} src={url} alt={`post-image-${index}`} />)
+          : null}
+
         <p>{content}</p>
-        {/* TODO 로그인 상태 연결 */}
-        <EditButtonDiv $isLogIn={true}>
+        <EditButtonDiv $isLogIn={isLogIn}>
           <button onClick={() => setIsEdit(true)}>수정</button> | <button onClick={handleDelete}>삭제</button>
         </EditButtonDiv>
       </ContentSection>
 
       <ReactionSection>
-        <ReactionDiv $isLiked={true}>
+        <ReactionDiv $isLiked={liked}>
           조회수 : {view}
           <FontAwesomeIcon icon="fa-solid fa-heart" className="heart" onClick={isLikedHandler} />
-          {like}
+          {likeCount}
         </ReactionDiv>
         {/* TODO 태그 저장 방식 변경해야함 */}#{tag}
       </ReactionSection>
@@ -168,5 +289,4 @@ const ButtonSection = styled.div`
 
 const BackButton = styled.button``;
 const WriteButton = styled.button``;
-
 export default ReadPost;
