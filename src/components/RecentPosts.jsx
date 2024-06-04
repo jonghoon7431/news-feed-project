@@ -2,7 +2,8 @@ import { useCallback, useEffect, useState } from 'react';
 import api from '../api/api';
 import PostList from './PostList';
 
-const POSTS_OFFSET = 10;
+const POSTS_OFFSET = 13;
+
 function RecentPosts() {
   const [pageNo, setPageNo] = useState(0);
   const [posts, setPosts] = useState([]);
