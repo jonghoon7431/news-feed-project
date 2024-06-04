@@ -1,11 +1,95 @@
 import styled from 'styled-components';
+import PostItem from '../components/PostItem';
 
 function MyPage() {
-  return <MyPageCon>MyPage</MyPageCon>;
+  return (
+    <MyPageCon>
+      <MyPageArea>
+        <ProfileArea>
+          <ProfileIcon>
+            <label htmlFor="profileFileUpload" id="profileFileUploadBtn">
+              파일 업로드
+            </label>
+            <input type="file" id="profileFileUpload" style={{ display: 'none' }} />
+          </ProfileIcon>
+          <ProfileInfo>
+            <ProfileId>아이디abc</ProfileId>
+            <BlackHr1px />
+            <ProfilePreview>내가 쓴 글 1개</ProfilePreview>
+          </ProfileInfo>
+        </ProfileArea>
+        <BlackHr1px />
+        <div className="postArea">
+          <PostItem
+            post={{
+              title: 'a',
+              view: 5,
+              like: 10,
+            }}
+          />
+        </div>
+      </MyPageArea>
+    </MyPageCon>
+  );
 }
 
+// 라벨은 테일윈드로 원하는 디자인 처리
+
 const MyPageCon = styled.div`
-  color: green;
+  color: black;
+`;
+// 추후 정리되는 대로 삭제
+
+const MyPageArea = styled.div`
+  min-width: 100%;
+  max-width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background-color: darkgray;
+`;
+
+const ProfileArea = styled.div`
+  min-width: 100%;
+  max-width: 100%;
+  display: flex;
+  align-items: center;
+`;
+
+const ProfileIcon = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  background-color: gray;
+  margin: 0 5% 0 12%;
+`;
+// W/H 26% 씩으로 해도 됨.
+
+const ProfileInfo = styled.div`
+  width: 35%;
+`;
+
+const ProfileId = styled.div`
+  padding: 0 0 0 3%;
+  font-size: 40px;
+  font-weight: 600;
+`;
+
+const ProfilePreview = styled.div`
+  padding: 0 0 0 3%;
+  font-size: 20px;
+  font-weight: 550;
+`;
+
+const BlackHr1px = styled.div`
+  margin: 10px 0 10px 0;
+  background: #000;
+  height: 1px;
+  border: none;
 `;
 
 export default MyPage;
