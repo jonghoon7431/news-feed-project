@@ -1,15 +1,13 @@
-// LogIn.jsx
-
 import { useState } from 'react';
 import { supabase } from '../supabaseClient';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import SignInBtn from '../components/SignInBtn';
-
 
 function LogIn() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const navigate = useNavigate(); 
 
   const handleSignIn = async (e) => {
     e.preventDefault();
@@ -26,6 +24,7 @@ function LogIn() {
       alert('로그인되었습니다.');
       setEmail('');
       setPassword('');
+      navigate('/'); // 로그인 성공 시 홈페이지로 이동
     }
   };
 
