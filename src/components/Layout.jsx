@@ -12,6 +12,8 @@ function Layout() {
 const Main = styled.main`
   background-color: #ccc;
   min-width: 750px;
+  background-color: white;
+  /* min-width: 750px; */
   max-width: 1000px;
   margin: 0 auto;
 `;

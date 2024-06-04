@@ -9,8 +9,10 @@ import store from './redux/config/configStore';
 function App() {
   return (
     <Provider store={store}>
-      <GlobalStyle />
-      <RouterProvider router={router} />
+      <>
+        <GlobalStyle />
+        <RouterProvider router={router} />
+      </>
     </Provider>
   );
 }

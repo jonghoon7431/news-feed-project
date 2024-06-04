@@ -1,7 +1,12 @@
 import { createBrowserRouter } from 'react-router-dom';
 import Layout from '../components/Layout';
+import CreatePost from '../pages/CreatePost';
+import Home from '../pages/Home';
 import LogIn from '../pages/LogIn';
 import SignUp from '../pages/SignUp';
+import Post from '../pages/Post';
+import MyPage from '../pages/MyPage';
+
 
 const router = createBrowserRouter([
   {
@@ -9,7 +14,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: '/',
-        element: <LogIn />,  // 기본 경로에 LogIn 컴포넌트를 설정
+        element: <Home />,
       },
       {
         path: '/login',
@@ -18,6 +23,19 @@ const router = createBrowserRouter([
       {
         path: '/sign_up',
         element: <SignUp />,
+      },
+  
+      {
+        path: '/create_post',
+        element: <CreatePost />,
+      },
+      {
+        path: '/post/:id',
+        element: <Post />,
+      },
+      {
+        path: '/my_page',
+        element: <MyPage />,
       },
     ],
   },
