@@ -23,12 +23,12 @@ function PostList({ title, list }) {
         {isLoading ? (
           <Loading />
         ) : list.length === 0 ? (
-          <p className="text-center">
+          <div className="text-center">
             <div className="p-3">관련 글이 없어요</div>
             <Link to="/create_post">
               <div className="py-2 w-3/4 bg-white rounded text-sm m-auto">🏃‍♂️🏃‍♀️🏃 글 쓰러 가기 🏃‍♂️🏃‍♀️🏃</div>
             </Link>
-          </p>
+          </div>
         ) : (
           list.map((post, i) => (
             <li key={i}>
