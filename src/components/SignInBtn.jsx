@@ -9,7 +9,7 @@ function SignInBtn() {
     });
   };
 
-  return <button onClick={signInWithGithub}>로그인</button>;
+  return <button onClick={signInWithGithub}>깃허브로 로그인</button>;
 }
 
 export default SignInBtn;

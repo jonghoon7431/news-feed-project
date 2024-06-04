@@ -1,5 +1,4 @@
 //src>components>Layout.jsx
-// eslint-disable-next-line react/prop-types
 import { Outlet } from 'react-router-dom';
 import styled from 'styled-components';
 
