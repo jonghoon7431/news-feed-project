@@ -3,17 +3,16 @@ import { Link } from 'react-router-dom';
 import api from '../api/api';
 import pencil from '../assets/pencil.png';
 import PostList from '../components/PostList';
+import RecentPosts from '../components/RecentPosts';
 import { SearchSection } from '../components/Search';
 
 function Home() {
   const [searchedPosts, setSearchedPosts] = useState([]); // 검색 결과
-  const [recentPosts, setRecentPosts] = useState([]);
   const [popularPosts, setPopularPosts] = useState([]);
 
   useEffect(() => {
     (async () => {
       setPopularPosts(await api.posts.getPopularPosts());
-      setRecentPosts(await api.posts.getRecentPosts());
     })();
   }, []);
 
@@ -32,7 +31,7 @@ function Home() {
           ) : (
             <>
               <PostList title="인기" list={popularPosts} />
-              <PostList title="최신" list={recentPosts} />
+              <RecentPosts />
             </>
           )}
         </section>
