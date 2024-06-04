@@ -6,8 +6,10 @@ import Footer from '../components/Footer';
 import Header from '../components/Header';
 import PostList from '../components/PostList';
 import { SearchSection } from '../components/Search';
+import supabase from '../supabaseClient';
+import { useSelector } from 'react-redux';
 
-const isLoggedIn = true; // 임시 변수
+
 function Home() {
   const [searchedPosts, setSearchedPosts] = useState([]); // 검색 결과
   const [recentPosts, setRecentPosts] = useState([]);
@@ -29,11 +31,14 @@ function Home() {
     const posts = await api.posts.search(keyword);
     setSearchedPosts(posts);
   };
+const user = useSelector((state) => state.auth.signedInUser)
+
+const isLoggedIn = user ? true : false;
 
   return (
     <>
       <Header>
-        {isLoggedIn ? (
+        {!isLoggedIn ? (
           <>
             <Link to="/sign_up" className="py-1 px-2 rounded text-sm font-bold">
               회원가입
@@ -49,6 +54,9 @@ function Home() {
         )}
       </Header>
       <article>
+        <button onClick={async() =>  {
+          await supabase.auth.signOut()
+        }}>logout</button>
         <SearchSection handleSearch={handleSearch} />
         <section>
           {searchedPosts.length !== 0 ? (
