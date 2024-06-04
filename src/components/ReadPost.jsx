@@ -1,12 +1,12 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useState } from 'react';
 import { useNavigationType } from 'react-router-dom';
 import styled from 'styled-components';
 import supabase from '../supabaseClient';
 
 function ReadPost({ setIsEdit, targetData, paramsId }) {
-  const isLogin = false;
-
-  // const [togleLike, setTogleLike] = useState(0)
+  const isLogIn = true;
+  const [isLiked, setIsLiked] = useState(false);
 
   const { title, content, name, view, date, time, like, tag } = targetData;
 
@@ -15,7 +15,7 @@ function ReadPost({ setIsEdit, targetData, paramsId }) {
   //삭제
   const handleDelete = async () => {
     if (!confirm('정말 삭제하시겠습니까?')) return;
-    if (!isLogin) return;
+    if (!isLogIn) return;
 
     const { error } = await supabase.from('POSTS').delete().eq('id', paramsId);
 
@@ -28,8 +28,31 @@ function ReadPost({ setIsEdit, targetData, paramsId }) {
     }
   };
 
-  // let tagArr = [...tag];
-  // console.log(tagArr);
+  //좋아요
+  //user_id 임시설정
+  const user_id = 'test';
+
+  const isLikedHandler = async () => {
+    if (!isLogIn) return alert('로그인 후 이용 가능합니다');
+
+    setIsLiked(!isLiked);
+
+    // likes 테이블에 userid, postid 둘 다 일치하는 항목 있으면 update
+    // 없으면 insert
+
+    // if()
+    const { data, error } = await supabase.from('LIKES').insert({
+      post_id: paramsId,
+      user_id,
+      is_liked: isLiked,
+    });
+    if (error) {
+      console.log(error);
+    } else {
+      console.log(data);
+    }
+  };
+
   return (
     <Container>
       <TitleSection>
@@ -51,9 +74,9 @@ function ReadPost({ setIsEdit, targetData, paramsId }) {
       </ContentSection>
 
       <ReactionSection>
-        <ReactionDiv>
+        <ReactionDiv $isLiked={true}>
           조회수 : {view}
-          <FontAwesomeIcon icon="fa-solid fa-heart" style={{ color: 'black', cursor: 'pointer' }} />
+          <FontAwesomeIcon icon="fa-solid fa-heart" className="heart" onClick={isLikedHandler} />
           {like}
         </ReactionDiv>
         {/* TODO 태그 저장 방식 변경해야함 */}#{tag}
@@ -122,6 +145,11 @@ const ReactionSection = styled.section`
 const ReactionDiv = styled.div`
   flex-direction: row;
   margin-bottom: 1rem;
+
+  & .heart {
+    color: ${(props) => (props.$isLiked ? 'red' : 'black')};
+    cursor: pointer;
+  }
 `;
 
 const ButtonSection = styled.div`
