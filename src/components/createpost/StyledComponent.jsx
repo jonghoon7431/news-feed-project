@@ -12,7 +12,6 @@ export const Btn = styled.button`
   padding:10px;
 `
 export const TagBtn = styled(Btn)`
-  background-color: white;
   &:hover{
     background-color:#CCC;
     transition:all 0.2s;
