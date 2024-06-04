@@ -1,5 +1,4 @@
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import styled from 'styled-components';
 import Footer from './Footer';
 import Header from './Header';
 
@@ -8,7 +7,7 @@ const isLoggedIn = false; // 임시 변수
 function Layout() {
   const location = useLocation();
   return (
-    <Main>
+    <main className="bg-white max-w-[1000px] mx-auto my-0">
       {location.pathname === '/' ? (
         <Header>
           <HomeButtons isLogIn={isLoggedIn} />
@@ -20,15 +19,9 @@ function Layout() {
       )}
       <Outlet />
       <Footer />
-    </Main>
+    </main>
   );
 }
-const Main = styled.main`
-  background-color: white;
-  /* min-width: 750px; */
-  max-width: 1000px;
-  margin: 0 auto;
-`;
 
 function HomeButtons({ isLogIn }) {
   if (isLogIn) {
