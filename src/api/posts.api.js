@@ -9,7 +9,7 @@ class PostApi {
 
   constructor() {}
 
-  async getRecentPosts({ startNo, rownum = 10 }) {
+  async getRecentPosts({ startNo, rownum }) {
     const response = await supabase
       .from(this.#TABLE_NAME)
       .select()
