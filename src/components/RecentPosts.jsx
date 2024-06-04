@@ -8,16 +8,6 @@ function RecentPosts() {
   const [posts, setPosts] = useState([]);
   const [hasNextPage, setHasNextPage] = useState(true);
 
-  const handleScrollEvent = useCallback(async () => {
-    const element = document.documentElement;
-    const scorllableHeight = element.scrollHeight - element.clientHeight;
-    const restScrollHeight = scorllableHeight - scrollY;
-    if (!hasNextPage || restScrollHeight > 5) {
-      return;
-    }
-    setPageNo((pageNo) => pageNo + POSTS_OFFSET + 1);
-  }, []);
-
   useEffect(() => {
     (async () => {
       api.posts.getRecentPosts({ startNo: pageNo, rownum: POSTS_OFFSET }).then((list) => {
@@ -32,6 +22,16 @@ function RecentPosts() {
       });
     })();
   }, [pageNo]);
+
+  const handleScrollEvent = useCallback(async () => {
+    const element = document.documentElement;
+    const scorllableHeight = element.scrollHeight - element.clientHeight;
+    const restScrollHeight = scorllableHeight - scrollY;
+    if (!hasNextPage || restScrollHeight > 5) {
+      return;
+    }
+    setPageNo((pageNo) => pageNo + POSTS_OFFSET + 1);
+  }, []);
 
   useEffect(() => {
     window.addEventListener('scroll', handleScrollEvent);
