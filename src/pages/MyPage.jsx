@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import PostItem from '../components/PostItem';
+import { useState } from 'react';
 
 function MyPage() {
   return (
