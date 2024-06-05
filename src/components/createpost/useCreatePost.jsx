@@ -111,6 +111,7 @@ export const useCreatePost = () => {
   };
 
   return {
+    navigate,
     handleSubmit,
     handleImageChange,
     showHashTag,
