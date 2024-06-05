@@ -9,8 +9,12 @@ class PostApi {
 
   constructor() {}
 
-  async getRecentPosts() {
-    const response = await supabase.from(this.#TABLE_NAME).select().limit(10).order('id', { ascending: false });
+  async getRecentPosts({ startNo, rownum }) {
+    const response = await supabase
+      .from(this.#TABLE_NAME)
+      .select()
+      .range(startNo, startNo + rownum)
+      .order('id', { ascending: false });
     return this.#getResult(response, []);
   }
 
@@ -34,7 +38,7 @@ class PostApi {
     if (status === 200) {
       return response.data;
     }
-    console.warn(status, response.statusText);
+    console.warn(`${status} : ${response.statusText}`, response.error);
     return defaultValue;
   }
 }
