@@ -1,14 +1,12 @@
-<<<<<<< HEAD
+
 import { Outlet } from 'react-router-dom';
 import styled from 'styled-components';
-=======
 import { useSelector } from 'react-redux';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import Footer from './Footer';
 import Header from './Header';
 import SignOutBtn from './SignOutBtn';
 
->>>>>>> 71399b5b21f6cbc2180604736b2b92e0fca68e58
 function Layout() {
   const user = useSelector((state) => state.auth.signedInUser);
   const isLoggedIn = user ? true : false;
@@ -54,14 +52,11 @@ function HomeButtons({ isLogIn }) {
     </>
   );
 }
-<<<<<<< HEAD
 const Main = styled.main`
   background-color: #ccc;
   min-width: 750px;
   max-width: 1000px;
   margin: 0 auto;
 `;
-=======
 
->>>>>>> 71399b5b21f6cbc2180604736b2b92e0fca68e58
 export default Layout;
