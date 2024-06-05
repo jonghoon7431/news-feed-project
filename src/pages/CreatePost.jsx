@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Form from '../components/createpost/Form';
@@ -6,6 +7,7 @@ import ImageUpload from '../components/createpost/ImageUpload';
 import HashTag from '../components/createpost/HashTag';
 import supabase from '../supabaseClient';
 import Top from '../components/createpost/Top';
+
 function CreatePost() {
   const navigate = useNavigate()
   const [name, setName] = useState('');
@@ -130,4 +132,4 @@ function CreatePost() {
   );
 }
 
-export default CreatePost;
+export default CreatePost

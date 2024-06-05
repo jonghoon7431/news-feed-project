@@ -1,3 +1,4 @@
+//src>components>Layout.jsx
 import { Outlet } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -9,6 +10,8 @@ function Layout() {
   );
 }
 const Main = styled.main`
+  background-color: #ccc;
+  min-width: 750px;
   background-color: white;
   /* min-width: 750px; */
   max-width: 1000px;
