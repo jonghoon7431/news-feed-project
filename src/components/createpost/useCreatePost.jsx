@@ -9,7 +9,6 @@ export const useCreatePost = () => {
   const dispatch = useDispatch();
   const { title, content, tag, previews, userEmail, titleError, contentError } = useSelector((state) => state.post);
   const [images, setImages] = useState([])
-
   const hashTagRef = useRef(null);
   const titleErrorRef = useRef('제목을 입력해주세요');
   const contentErrorRef = useRef('내용을 입력해주세요');
