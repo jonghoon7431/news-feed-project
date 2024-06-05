@@ -3,9 +3,11 @@ import PostItem from '../components/PostItem';
 import api from '../api/api';
 import Header from '../components/Header';
 import { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 function MyPage() {
-  // const [myPosts, setMyPosts] = useState([]);
+  const [myPosts, setMyPosts] = useState([]);
   // const [myIcon, setMyIcon] = useState();
 
   // const handleChangeImg = (e) => {
@@ -16,8 +18,18 @@ function MyPage() {
   //   // 클릭해서 파일 업로드하면 supabase에 올라가고, 동시에 그걸 내 프로필 사진으로 등록해 줘야 함< 1번 문제
   // };
 
+  const user = useSelector((state) => state.auth.signedInUser);
+  const navigate = useNavigate();
+  if (!user) {
+    navigate('/');
+  }
+
   useEffect(() => {
-    async () => setMyPosts(await api.posts.getMyPosts());
+    const showMyPosts = async () => {
+      const posts = await api.posts.getMyPosts(user.id);
+      setMyPosts(posts);
+    };
+    showMyPosts();
   }, []);
 
   return (
@@ -33,20 +45,20 @@ function MyPage() {
             <img src="../assets/profile.png" />
           </ProfileIcon>
           <ProfileInfo>
-            <ProfileId>아이디abc</ProfileId>
+            <ProfileId>
+              아이디abc
+              <button>로그아웃</button>
+            </ProfileId>
             <BlackHr1px />
             <ProfilePreview>내가 쓴 글 1개</ProfilePreview>
           </ProfileInfo>
         </ProfileArea>
         <BlackHr1px />
         <div className="postArea">
-          <PostItem
-            post={{
-              title: 'a',
-              view: 5,
-              like: 10,
-            }}
-          />
+          {' '}
+          {myPosts.map((myPost) => {
+            <PostItem post={myPost} />;
+          })}
         </div>
       </MyPageArea>
     </MyPageCon>

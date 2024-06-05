@@ -28,14 +28,12 @@ class PostApi {
     return this.#getResult(response, []);
   }
 
-  async getMyPosts() {
+  async getMyPosts(userId) {
     const response = await supabase
       .from(this.#TABLE_NAME)
       .select()
-      .order('id', { ascending: false }) // 오더 독스에서 검색하기.
-      .eq('name');
-    //유저 ID를 가져와야 한다. 해당 컬럼에서 , 뒤에 일치하는 값을 가져옴
-    //현재 로그인 되어 있는 유저의 아이디를 가져와서 넣어준다. 전역변수에서 ID값만 가져와서 넣어준다.
+      .order('id', { ascending: false })
+      .eq('name', userId);
     return this.#getResult(response, []);
   }
 
