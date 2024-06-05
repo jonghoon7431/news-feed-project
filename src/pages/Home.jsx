@@ -9,11 +9,12 @@ import { SearchSection } from '../components/Search';
 import supabase from '../supabaseClient';
 import { useSelector } from 'react-redux';
 
-
 function Home() {
   const [searchedPosts, setSearchedPosts] = useState([]); // 검색 결과
   const [recentPosts, setRecentPosts] = useState([]);
   const [popularPosts, setPopularPosts] = useState([]);
+  const user = useSelector((state) => state.auth.signedInUser);
+  const isLoggedIn = user ? true : false;
 
   useEffect(() => {
     (async () => {
@@ -31,9 +32,11 @@ function Home() {
     const posts = await api.posts.search(keyword);
     setSearchedPosts(posts);
   };
-const user = useSelector((state) => state.auth.signedInUser)
 
-const isLoggedIn = user ? true : false;
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    window.location.reload(); // 로그아웃 후 페이지 새로고침
+  };
 
   return (
     <>
@@ -48,15 +51,17 @@ const isLoggedIn = user ? true : false;
             </Link>
           </>
         ) : (
-          <Link to="/my_page" className="py-1 px-2 rounded text-sm font-bold">
-            마이페이지
-          </Link>
+          <>
+            <Link to="/my_page" className="py-1 px-2 rounded text-sm font-bold">
+              마이페이지
+            </Link>
+            <button onClick={handleSignOut} className="py-1 px-2 rounded text-sm font-bold">
+              로그아웃
+            </button>
+          </>
         )}
       </Header>
       <article>
-        <button onClick={async() =>  {
-          await supabase.auth.signOut()
-        }}>logout</button>
         <SearchSection handleSearch={handleSearch} />
         <section>
           {searchedPosts.length !== 0 ? (
@@ -69,7 +74,7 @@ const isLoggedIn = user ? true : false;
           )}
         </section>
       </article>
-      <Footer></Footer>
+      <Footer />
       <Link
         to="/create_post"
         className="fixed right-0 bottom-0 m-2 rounded w-10 h-10 bg-gray-300 flex justify-center items-center hover:bg-white"
