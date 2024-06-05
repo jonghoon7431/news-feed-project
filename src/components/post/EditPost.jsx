@@ -32,9 +32,18 @@ function EditPost({ targetData, setTargetData, setIsEdit, postId }) {
     }
   };
   return (
-    <div>
-      <input type="text" value={title} name="title" onChange={onChangeHandler} />
-      <textarea type="text" value={content} name="content" onChange={onChangeHandler} />
+    <div className="bg-gray-200 h-[70vh] flex flex-col">
+      <label className="mb-4 mt-4 font-bold">제목</label>
+      <input className="h-[6vh] mb-6" type="text" value={title} name="title" onChange={onChangeHandler} />
+      <label className="mb-4 font-bold">내용</label>
+      <textarea
+        className="h-[30vh] mb-4 resize-none"
+        type="text"
+        value={content}
+        name="content"
+        onChange={onChangeHandler}
+      />
+      <label className="mb-4 font-bold">태그</label>
       <input
         type="text"
         value={tag}
@@ -42,8 +51,14 @@ function EditPost({ targetData, setTargetData, setIsEdit, postId }) {
         onChange={onChangeHandler}
         placeholder="태그는 ,를 기준으로 하나씩 작성 부탁드립니다"
       />
-      <button onClick={editHandler}>수정 완료</button>
-      <button onClick={() => setIsEdit(false)}>취소</button>
+      <div className="mt-16 flex justify-end items-center">
+        <button className="bg-gray-700 mr-2  rounded-2xl p-2 text-white" onClick={editHandler}>
+          수정 완료
+        </button>
+        <button className="mr-4 bg-gray-400 rounded-2xl p-2 text-white" onClick={() => setIsEdit(false)}>
+          취소
+        </button>
+      </div>
     </div>
   );
 }
