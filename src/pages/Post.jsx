@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import EditPost from '../components/EditPost';
 import Footer from '../components/Footer';
-import ReadPost from '../components/ReadPost';
+import EditPost from '../components/post/EditPost';
+import ReadPost from '../components/post/ReadPost';
 import supabase from '../supabaseClient';
 
 function Post() {
