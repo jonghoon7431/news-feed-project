@@ -38,12 +38,14 @@ function Home() {
           </>
         )}
       </section>
-      <Link
-        to="/create_post"
-        className="fixed right-0 bottom-0 m-2 rounded w-10 h-10 bg-gray-300 flex justify-center items-center hover:bg-white"
-      >
-        <img src={pencil} className="w-8 hover:opacity-80" />
-      </Link>
+      <div className="flex justify-end items-center pr-3">
+        <Link
+          to="/create_post"
+          className="fixed bottom-3 rounded w-10 h-10 flex justify-center items-center bg-gray-300 hover:bg-white"
+        >
+          <img src={pencil} className="w-8 hover:opacity-80" />
+        </Link>
+      </div>
     </main>
   );
 }
