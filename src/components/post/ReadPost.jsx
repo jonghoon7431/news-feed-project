@@ -3,11 +3,14 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import supabase from '../supabaseClient';
+import supabase from '../../supabaseClient';
 
-function ReadPost({ setIsEdit, targetData, postId }) {
+function ReadPost({ setIsEdit, targetData, postId, isEdit }) {
   const navigate = useNavigate();
   const signedInUser = useSelector((state) => state.auth.signedInUser);
+
+  const { id, title, content, name, view, date, time, like, tag, image_url, user_id } = targetData;
+  const postUserId = user_id;
 
   //!!: 값을 boolean 형태로
   const [isLoggedIn, setIsLoggedIn] = useState(!!signedInUser);
@@ -21,8 +24,6 @@ function ReadPost({ setIsEdit, targetData, postId }) {
       setUserId(null);
     }
   }, [signedInUser]);
-
-  const { id, title, content, name, view, date, time, like, tag, image_url } = targetData;
 
   // 삭제
   const handleDelete = async () => {
@@ -146,29 +147,20 @@ function ReadPost({ setIsEdit, targetData, postId }) {
   const [imageUrls, setImageUrls] = useState([]);
 
   useEffect(() => {
-    const getImages = async () => {
+    const getImages = () => {
       const urls = [];
 
-      if (!targetData.image_url || targetData.image_url.length === 0) {
+      if (!image_url || image_url.length === 0) {
         setImageUrls([]);
         return;
       }
-
-      for (const imageUrl of targetData.image_url) {
-        const { data, error } = await supabase.storage.from('images').getPublicUrl(imageUrl);
-
-        if (error) {
-          console.log(error);
-        } else {
-          urls.push(data.publicUrl);
-        }
+      for (const imageUrl of image_url) {
+        urls.push(imageUrl);
       }
-
       setImageUrls(urls);
     };
-
     getImages();
-  }, [targetData.image_url]);
+  }, [image_url]);
 
   // View 증가
   useEffect(() => {
@@ -207,7 +199,7 @@ function ReadPost({ setIsEdit, targetData, postId }) {
           : null}
 
         <p>{content}</p>
-        <EditButtonDiv $isLogIn={isLoggedIn}>
+        <EditButtonDiv $editAuthority={isLoggedIn && postUserId === userId}>
           <button onClick={() => setIsEdit(true)}>수정</button> | <button onClick={handleDelete}>삭제</button>
         </EditButtonDiv>
       </ContentSection>
@@ -218,7 +210,7 @@ function ReadPost({ setIsEdit, targetData, postId }) {
           <FontAwesomeIcon icon="fa-solid fa-heart" className="heart" onClick={isLikedHandler} />
           {likeCount}
         </ReactionDiv>
-        {tag && Array.isArray(tag) && tag.length > 0 ? tag.map((t, index) => <span key={index}>#{t} </span>) : null}
+        {tag && !isEdit && tag.length > 0 ? tag.map((item, index) => <span key={index}>#{item} </span>) : null}
       </ReactionSection>
 
       <ButtonSection>
@@ -251,7 +243,7 @@ const ContentSection = styled.section`
   }
 `;
 const EditButtonDiv = styled.div`
-  display: ${(props) => (props.$isLogIn ? 'flex' : 'none')};
+  display: ${(props) => (props.$editAuthority ? 'flex' : 'none')};
   justify-content: end;
 `;
 
