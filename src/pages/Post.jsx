@@ -10,15 +10,15 @@ function Post() {
   const [isEdit, setIsEdit] = useState(false);
 
   const [targetData, setTargetData] = useState({});
-  const paramsId = Number(useParams().id);
+  const postId = Number(useParams().id);
 
   useEffect(() => {
     const fetchThisData = async () => {
-      const { data, error } = await supabase.from('POSTS').select('*').eq('id', paramsId);
+      const { data, error } = await supabase.from('POSTS').select('*').eq('id', postId).single();
       if (error) {
         console.log(error);
       } else {
-        setTargetData(data[0]);
+        setTargetData(data);
       }
     };
 
@@ -29,9 +29,9 @@ function Post() {
     <>
       <Header />
       {isEdit ? (
-        <EditPost targetData={targetData} setTargetData={setTargetData} setIsEdit={setIsEdit} paramsId={paramsId} />
+        <EditPost targetData={targetData} setTargetData={setTargetData} setIsEdit={setIsEdit} postId={postId} />
       ) : (
-        <ReadPost isEdit={isEdit} setIsEdit={setIsEdit} targetData={targetData} paramsId={paramsId} />
+        <ReadPost isEdit={isEdit} setIsEdit={setIsEdit} targetData={targetData} postId={postId} />
       )}
       <Footer />
     </>

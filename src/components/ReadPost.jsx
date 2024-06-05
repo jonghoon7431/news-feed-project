@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import supabase from '../supabaseClient';
 
-function ReadPost({ setIsEdit, targetData, paramsId }) {
+function ReadPost({ setIsEdit, targetData, postId }) {
   const navigate = useNavigate();
   const signedInUser = useSelector((state) => state.auth.signedInUser);
 
@@ -29,7 +29,7 @@ function ReadPost({ setIsEdit, targetData, paramsId }) {
     if (!confirm('정말 삭제하시겠습니까?')) return;
     if (!isLoggedIn) return;
 
-    const { error } = await supabase.from('POSTS').delete().eq('id', paramsId);
+    const { error } = await supabase.from('POSTS').delete().eq('id', postId);
 
     if (error) {
       console.log(error);
@@ -41,7 +41,6 @@ function ReadPost({ setIsEdit, targetData, paramsId }) {
   };
 
   // Like
-  const postId = paramsId;
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(like);
 
@@ -57,7 +56,7 @@ function ReadPost({ setIsEdit, targetData, paramsId }) {
           .single();
 
         if (error) {
-          console.log(error);
+          console.warn(error);
         } else {
           setLiked(data.is_liked);
         }
@@ -71,10 +70,11 @@ function ReadPost({ setIsEdit, targetData, paramsId }) {
   useEffect(() => {
     const fetchLikeCount = async () => {
       if (isLoggedIn) {
-        const { data, error } = await supabase.from('POSTS').select('like').eq('id', paramsId).single();
+        const { data, error } = await supabase.from('POSTS').select('like').eq('id', postId).single();
 
         if (error) {
-          console.log(error);
+          console.error(error);
+          alert('좋아요 수를 가져오는데에 일시적 오류가 발생했습니다');
         } else {
           setLikeCount(data.like);
         }
@@ -82,7 +82,7 @@ function ReadPost({ setIsEdit, targetData, paramsId }) {
     };
 
     fetchLikeCount();
-  }, [isLoggedIn, liked, paramsId]);
+  }, [isLoggedIn, liked, postId]);
 
   //like 클릭 이벤트
   // 클릭 시 post id,user id 대조해서 LIKES테이블에 관련 정보가 있으면 업데이트
@@ -112,28 +112,29 @@ function ReadPost({ setIsEdit, targetData, paramsId }) {
       .select();
 
     if (error) {
-      console.log(error);
+      console.error(error);
     } else {
       const { data: postData, error: postError } = await supabase
         .from('POSTS')
         .select('like')
-        .eq('id', paramsId)
+        .eq('id', postId)
         .single();
 
       if (postError) {
-        console.log(postError);
+        console.error(postError);
       } else {
         const newLikeCount = newLikedStatus ? postData.like + 1 : postData.like - 1;
 
         const { data: updatedPostData, error: updateError } = await supabase
           .from('POSTS')
           .update({ like: newLikeCount })
-          .eq('id', paramsId)
+          .eq('id', postId)
           .select()
           .single();
 
         if (updateError) {
-          console.log(updateError);
+          console.error(updateError);
+          alert('잠시 후 다시 시도해주세요');
         } else {
           setLikeCount(updatedPostData.like);
         }
@@ -154,16 +155,12 @@ function ReadPost({ setIsEdit, targetData, paramsId }) {
       }
 
       for (const imageUrl of targetData.image_url) {
-        try {
-          const { data, error } = await supabase.storage.from('images').getPublicUrl(imageUrl);
+        const { data, error } = await supabase.storage.from('images').getPublicUrl(imageUrl);
 
-          if (error) {
-            console.log(error);
-          } else {
-            urls.push(data.publicUrl);
-          }
-        } catch (error) {
+        if (error) {
           console.log(error);
+        } else {
+          urls.push(data.publicUrl);
         }
       }
 
@@ -180,17 +177,17 @@ function ReadPost({ setIsEdit, targetData, paramsId }) {
         const { error } = await supabase
           .from('POSTS')
           .update({ view: view + 1 })
-          .eq('id', paramsId)
+          .eq('id', postId)
           .select();
       } catch (error) {
-        console.log(error);
+        console.warn(error);
       }
     };
 
     if (view !== undefined) {
       updateView();
     }
-  }, [paramsId, view]);
+  }, [postId, view]);
 
   return (
     <article className="bg-white overflow-auto whitespace-pre-wrap break-words h-screen">

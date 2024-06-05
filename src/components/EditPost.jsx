@@ -1,6 +1,6 @@
 import supabase from '../supabaseClient';
 
-function EditPost({ targetData, setTargetData, setIsEdit, paramsId }) {
+function EditPost({ targetData, setTargetData, setIsEdit, postId }) {
   const { title, content, tag } = targetData;
 
   const onChangeHandler = (e) => {
@@ -14,9 +14,10 @@ function EditPost({ targetData, setTargetData, setIsEdit, paramsId }) {
         title: title,
         content: content,
       })
-      .eq('id', paramsId);
+      .eq('id', postId);
     if (error) {
-      console.log(error);
+      console.error(error);
+      alert('수정 실패. 잠시 후 다시 시도해주세요');
     } else {
       alert('수정되었습니다');
       setIsEdit(false);
