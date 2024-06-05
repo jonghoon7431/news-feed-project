@@ -1,35 +1,16 @@
 import styled from 'styled-components';
-import PostItem from '../components/PostItem';
+
 import api from '../api/api';
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import PostList from '../components/PostList';
 
 function MyPage() {
   const [myPosts, setMyPosts] = useState([]);
-  // const [myIcon, setMyIcon] = useState();
-
-  // const handleChangeImg = (e) => {
-  //   const file = e.target.files[0];
-
-  //   setMyIcon();
-
-  //   // 클릭해서 파일 업로드하면 supabase에 올라가고, 동시에 그걸 내 프로필 사진으로 등록해 줘야 함< 1번 문제
-  // };
 
   const user = useSelector((state) => state.auth.signedInUser);
   const navigate = useNavigate();
-
-  // useEffect(() => {
-  //   const showMyPosts = async () => {
-  //     if (!user) {
-  //       navigate('/');
-  //     }
-  //     const posts = await api.posts.getMyPosts(user.id);
-  //     setMyPosts(posts);
-  //   };
-  //   showMyPosts();
-  // }, []);
 
   useEffect(() => {
     const fetchMyPosts = async () => {
@@ -62,9 +43,7 @@ function MyPage() {
           </ProfileInfo>
         </ProfileArea>
         <PostArea>
-          {myPosts.map((post) => (
-            <PostItem key={post.id} post={post} />
-          ))}
+          <PostList title="내가 작성한 글" list={myPosts} />
         </PostArea>
       </MyPageArea>
     </>
@@ -74,7 +53,7 @@ function MyPage() {
 const MyPageArea = styled.div`
   min-width: 100%;
   max-width: 100%;
-  height: 100vh
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -84,6 +63,7 @@ const MyPageArea = styled.div`
 const ProfileArea = styled.div`
   min-width: 100%;
   max-width: 100%;
+  max-height: 20vh;
   display: flex;
   align-items: center;
 `;
@@ -126,6 +106,7 @@ const BlackHr1px = styled.div`
 const PostArea = styled.div`
   min-width: 100%;
   max-width: 100%;
+  min-height: 70vh;
   margin-top: 80px;
   background: #f3f4f6;
 `;
