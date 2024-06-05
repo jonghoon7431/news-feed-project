@@ -1,7 +1,11 @@
-import React from 'react';
+import React from 'react'
 
-function CreatePost() {
-  return <div>CreatePost</div>;
+const CreatePost = () => {
+  return (
+    <div>
+      
+    </div>
+  )
 }
 
-export default CreatePost;
+export default CreatePost

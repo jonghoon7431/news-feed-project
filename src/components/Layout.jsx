@@ -1,13 +1,15 @@
+import { useSelector } from 'react-redux';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import Footer from './Footer';
 import Header from './Header';
 
-const isLoggedIn = false; // 임시 변수
-
 function Layout() {
+  const user = useSelector((state) => state.auth.signedInUser);
+  const isLoggedIn = user ? true : false;
+
   const location = useLocation();
   return (
-    <main className="bg-white max-w-[1000px] mx-auto my-0">
+    <main className="bg-white max-w-[1000px] min-x-[750px] mx-auto my-0">
       {location.pathname === '/' ? (
         <Header>
           <HomeButtons isLogIn={isLoggedIn} />
@@ -34,7 +36,7 @@ function HomeButtons({ isLogIn }) {
 
   return (
     <>
-      <Link to="/sign_in" className="py-1 px-2 rounded text-sm font-bold">
+      <Link to="/sign_up" className="py-1 px-2 rounded text-sm font-bold">
         회원가입
       </Link>
       <Link to="/login" className="py-1 px-2 rounded text-sm font-bold">

@@ -3,9 +3,10 @@ import Layout from '../components/Layout';
 import CreatePost from '../pages/CreatePost';
 import Home from '../pages/Home';
 import LogIn from '../pages/LogIn';
-import MyPage from '../pages/MyPage';
+import SignUp from '../pages/SignUp';
 import Post from '../pages/Post';
-import SignIn from '../pages/SignIn';
+import MyPage from '../pages/MyPage';
+
 
 const router = createBrowserRouter([
   {
@@ -20,9 +21,10 @@ const router = createBrowserRouter([
         element: <LogIn />,
       },
       {
-        path: '/sign_in',
-        element: <SignIn />,
+        path: '/sign_up',
+        element: <SignUp />,
       },
+  
       {
         path: '/create_post',
         element: <CreatePost />,
