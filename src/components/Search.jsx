@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import searchPng from '../assets/search.png';
 
-export function SearchBox({ handleSearch }) {
+export function Search({ handleSearch }) {
   const [searchText, setSearchText] = useState('');
 
   return (

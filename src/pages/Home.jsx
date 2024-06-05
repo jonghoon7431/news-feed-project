@@ -4,7 +4,7 @@ import api from '../api/api';
 import pencil from '../assets/pencil.png';
 import PostList from '../components/PostList';
 import RecentPosts from '../components/RecentPosts';
-import { SearchBox } from '../components/Search';
+import { Search } from '../components/Search';
 
 function Home() {
   const [searchedPosts, setSearchedPosts] = useState([]); // 검색 결과
@@ -23,7 +23,7 @@ function Home() {
 
   return (
     <main>
-      <SearchBox handleSearch={handleSearch} />
+      <Search handleSearch={handleSearch} />
       <section>
         {searchedPosts.length !== 0 ? (
           <PostList list={searchedPosts} />
