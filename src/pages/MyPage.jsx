@@ -100,7 +100,7 @@ function MyPage() {
         <ProfileArea>
           <ProfileIcon>
             {profileUrl ? (
-              <img src={profileUrl} className="rounded-full" />
+              <img src={profileUrl} className="rounded-full h-full w-full" />
             ) : (
               <>
                 <img
