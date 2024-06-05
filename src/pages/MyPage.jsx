@@ -1,13 +1,16 @@
-import styled from 'styled-components';
-import PostItem from '../components/PostItem';
-import api from '../api/api';
-import Header from '../components/Header';
-import { useState, useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+import api from '../api/api';
+import DefaultProfileUrl from '../assets/profile.png';
+import PostItem from '../components/PostItem';
+import SignOutBtn from '../components/SignOutBtn';
 
 function MyPage() {
   const [myPosts, setMyPosts] = useState([]);
+  const [profileUrl, setProfileUrl] = useState('');
+  const refFileUploader = useRef();
+  
   // const [myIcon, setMyIcon] = useState();
 
   // const handleChangeImg = (e) => {
@@ -18,11 +21,8 @@ function MyPage() {
   //   // 클릭해서 파일 업로드하면 supabase에 올라가고, 동시에 그걸 내 프로필 사진으로 등록해 줘야 함< 1번 문제
   // };
 
-  const user = useSelector((state) => state.auth.signedInUser);
-  const navigate = useNavigate();
-  if (!user) {
-    navigate('/');
-  }
+  const contextUser = useSelector((state) => state.auth.signedInUser);
+  const user = contextUser ?? {};
 
   useEffect(() => {
     const showMyPosts = async () => {
@@ -30,32 +30,48 @@ function MyPage() {
       setMyPosts(posts);
     };
     showMyPosts();
-  }, []);
+
+    (async () => {
+      const profileUrl = await api.profile.getMyProfile(user.id);
+      if (profileUrl) {
+        setProfileUrl(profileUrl);
+      }
+    })();
+  }, [contextUser]);
+
+  const handleRequestFileUpload = () => {
+    refFileUploader.current.click();
+  };
 
   return (
     <MyPageCon>
-      <Header />
       <MyPageArea>
         <ProfileArea>
-          <ProfileIcon>
-            <label htmlFor="profileFileUpload" id="profileFileUploadBtn">
-              파일 업로드
-            </label>
-            <input type="file" id="profileFileUpload" style={{ display: 'none' }} />
-            <img src="../assets/profile.png" />
+          <ProfileIcon className={`bg-[url('${DefaultProfileUrl}')]`}>
+            {profileUrl ? (
+              <img src={profileUrl} className="rounded-full" />
+            ) : (
+              <>
+                <img
+                  src={DefaultProfileUrl}
+                  onClick={handleRequestFileUpload}
+                  className="rounded-full cursor-pointer"
+                />
+                <input type="file" ref={refFileUploader} className="invisible" />
+              </>
+            )}
           </ProfileIcon>
           <ProfileInfo>
             <ProfileId>
-              아이디abc
-              <button>로그아웃</button>
+              {user.email}
+              <SignOutBtn />
             </ProfileId>
             <BlackHr1px />
-            <ProfilePreview>내가 쓴 글 1개</ProfilePreview>
+            <ProfilePreview>내가 쓴 글 {myPosts.length}개</ProfilePreview>
           </ProfileInfo>
         </ProfileArea>
         <BlackHr1px />
         <div className="postArea">
-          {' '}
           {myPosts.map((myPost) => {
             <PostItem post={myPost} />;
           })}
