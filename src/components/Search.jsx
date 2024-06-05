@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import searchPng from '../assets/search.png';
 
-export function SearchSection({ handleSearch }) {
+export function SearchBox({ handleSearch }) {
   const [searchText, setSearchText] = useState('');
 
   return (
-    <section className="flex justify-center items-center flex-1 pt-2 py-6">
+    <article className="flex justify-center items-center flex-1 pt-2 py-6">
       <input
         type="text"
         value={searchText}
@@ -17,6 +17,6 @@ export function SearchSection({ handleSearch }) {
         className="w-6 relative right-6 hover:cursor-pointer"
         onClick={() => handleSearch(searchText)}
       />
-    </section>
+    </article>
   );
 }
