@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import Footer from '../components/Footer';
 import EditPost from '../components/post/EditPost';
 import ReadPost from '../components/post/ReadPost';
+import supabase from '../supabaseClient';
 
 function Post() {
   const [isEdit, setIsEdit] = useState(false);

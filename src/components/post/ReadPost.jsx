@@ -9,6 +9,9 @@ function ReadPost({ setIsEdit, targetData, postId, isEdit }) {
   const navigate = useNavigate();
   const signedInUser = useSelector((state) => state.auth.signedInUser);
 
+  const { id, title, content, name, view, date, time, like, tag, image_url, user_id } = targetData;
+  const postUserId = user_id;
+
   //!!: 값을 boolean 형태로
   const [isLoggedIn, setIsLoggedIn] = useState(!!signedInUser);
   const [userId, setUserId] = useState(null);
@@ -22,9 +25,6 @@ function ReadPost({ setIsEdit, targetData, postId, isEdit }) {
     }
   }, [signedInUser]);
 
-  const { id, title, content, name, view, date, time, like, tag, image_url } = targetData;
-
-  console.log(tag);
   // 삭제
   const handleDelete = async () => {
     if (!confirm('정말 삭제하시겠습니까?')) return;
@@ -147,29 +147,20 @@ function ReadPost({ setIsEdit, targetData, postId, isEdit }) {
   const [imageUrls, setImageUrls] = useState([]);
 
   useEffect(() => {
-    const getImages = async () => {
+    const getImages = () => {
       const urls = [];
 
-      if (!targetData.image_url || targetData.image_url.length === 0) {
+      if (!image_url || image_url.length === 0) {
         setImageUrls([]);
         return;
       }
-
-      for (const imageUrl of targetData.image_url) {
-        const { data, error } = await supabase.storage.from('images').getPublicUrl(imageUrl);
-
-        if (error) {
-          console.log(error);
-        } else {
-          urls.push(data.publicUrl);
-        }
+      for (const imageUrl of image_url) {
+        urls.push(imageUrl);
       }
-
       setImageUrls(urls);
     };
-
     getImages();
-  }, [targetData.image_url]);
+  }, [image_url]);
 
   // View 증가
   useEffect(() => {
@@ -208,7 +199,7 @@ function ReadPost({ setIsEdit, targetData, postId, isEdit }) {
           : null}
 
         <p>{content}</p>
-        <EditButtonDiv $isLogIn={isLoggedIn}>
+        <EditButtonDiv $editAuthority={isLoggedIn && postUserId === userId}>
           <button onClick={() => setIsEdit(true)}>수정</button> | <button onClick={handleDelete}>삭제</button>
         </EditButtonDiv>
       </ContentSection>
@@ -252,7 +243,7 @@ const ContentSection = styled.section`
   }
 `;
 const EditButtonDiv = styled.div`
-  display: ${(props) => (props.$isLogIn ? 'flex' : 'none')};
+  display: ${(props) => (props.$editAuthority ? 'flex' : 'none')};
   justify-content: end;
 `;
 
