@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import EditPost from '../components/EditPost';
-import ReadPost from '../components/ReadPost';
+import Footer from '../components/Footer';
+import EditPost from '../components/post/EditPost';
+import ReadPost from '../components/post/ReadPost';
 import supabase from '../supabaseClient';
 
 function Post() {
@@ -30,6 +31,7 @@ function Post() {
       ) : (
         <ReadPost isEdit={isEdit} setIsEdit={setIsEdit} targetData={targetData} postId={postId} />
       )}
+      <Footer />
     </>
   );
 }
