@@ -4,7 +4,7 @@ import PostList from './PostList';
 
 const POSTS_OFFSET = 13;
 
-function RecentPosts() {
+function RecentPosts({ title }) {
   const [pageNo, setPageNo] = useState(0);
   const [posts, setPosts] = useState([]);
   const [hasNextPage, setHasNextPage] = useState(true);
@@ -41,7 +41,7 @@ function RecentPosts() {
     };
   }, []);
 
-  return <PostList title="최신 글" list={posts} />;
+  return <PostList title={title} list={posts} />;
 }
 
 export default RecentPosts;
