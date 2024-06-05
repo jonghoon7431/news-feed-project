@@ -169,6 +169,7 @@ function ReadPost({ setIsEdit, targetData, postId }) {
 
     getImages();
   }, [targetData.image_url]);
+  console.log(imageUrls);
 
   // View 증가
   useEffect(() => {
@@ -201,18 +202,18 @@ function ReadPost({ setIsEdit, targetData, postId }) {
         </div>
       </TitleSection>
 
-      <ContentSection>
+      <section className="h-auto p-8 border-b border-black">
         {imageUrls.length > 0
           ? imageUrls.map((url, index) => <img key={index} src={url} alt={`post-image-${index}`} />)
           : null}
 
-        <p>{content}</p>
+        <p className="text-lg leading-loose">{content}</p>
         <EditButtonDiv $isLogIn={isLoggedIn}>
           <button onClick={() => setIsEdit(true)}>수정</button> | <button onClick={handleDelete}>삭제</button>
         </EditButtonDiv>
-      </ContentSection>
+      </section>
 
-      <ReactionSection>
+      <ReactionSection className="h-[10vh] flex flex-col pt-4 pl-8 pb-0 border-b border-black">
         <ReactionDiv $isLiked={liked}>
           조회수 : {view}
           <FontAwesomeIcon icon="fa-solid fa-heart" className="heart" onClick={isLikedHandler} />
@@ -221,45 +222,28 @@ function ReadPost({ setIsEdit, targetData, postId }) {
         {tag && Array.isArray(tag) && tag.length > 0 ? tag.map((t, index) => <span key={index}>#{t} </span>) : null}
       </ReactionSection>
 
-      <ButtonSection>
-        <BackButton onClick={() => navigate(-1)}>뒤로가기</BackButton>
-        <WriteButton onClick={() => navigate('/create_post')}>글쓰기</WriteButton>
-      </ButtonSection>
+      <section className="h-[10vh] flex justify-center items-center gap-[2vw]">
+        <button className="cursor-pointer text-2xl py-2 px-4 text-[1.8rem]" onClick={() => navigate(-1)}>
+          뒤로가기
+        </button>
+        <button className="cursor-pointer text-2xl py-2 px-4 text-[1.8rem]" onClick={() => navigate('/create_post')}>
+          글쓰기
+        </button>
+      </section>
     </article>
   );
 }
 
-const Container = styled.div`
-  background-color: white;
-  overflow: auto;
-  white-space: pre-wrap;
-  word-wrap: break-word;
-`;
-
 const TitleSection = styled.section`
   border-bottom: 1px solid black;
 `;
-const WriterInfoDiv = styled.div``;
 
-const ContentSection = styled.section`
-  height: auto;
-  padding: 2rem;
-  border-bottom: 1px solid black;
-  & p {
-    font-size: 1.2rem;
-    line-height: 130%;
-  }
-`;
 const EditButtonDiv = styled.div`
   display: ${(props) => (props.$isLogIn ? 'flex' : 'none')};
   justify-content: end;
 `;
 
 const ReactionSection = styled.section`
-  height: 10vh;
-  display: flex;
-  flex-direction: column;
-  padding: 1rem 0 0 2rem;
   border-bottom: 1px solid black;
 `;
 const ReactionDiv = styled.div`

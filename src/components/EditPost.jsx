@@ -1,6 +1,8 @@
+import { useNavigate } from 'react-router-dom';
 import supabase from '../supabaseClient';
 
 function EditPost({ targetData, setTargetData, setIsEdit, postId }) {
+  const navigate = useNavigate;
   const { title, content, tag } = targetData;
 
   const onChangeHandler = (e) => {
@@ -24,11 +26,18 @@ function EditPost({ targetData, setTargetData, setIsEdit, postId }) {
     }
   };
   return (
-    <div>
-      <input type="text" value={title} name="title" onChange={onChangeHandler} />
-      <textarea type="text" value={content} name="content" onChange={onChangeHandler} />
+    <div className="flex flex-col h-[100vh] w-full bg-gray-300">
+      <div className="h-[20vh] bg-red-300">
+        <label>제목</label>
+        <input type="text" value={title} name="title" onChange={onChangeHandler} />
+      </div>
+      <div className="bg-yellow-200">
+        <label>내용</label>
+        <textarea type="text" value={content} name="content" onChange={onChangeHandler} />
+      </div>
       <input type="text" value={tag} name="tag" onChange={onChangeHandler} />
       <button onClick={editHandler}>수정 완료</button>
+      <button onClick={() => navigate(-1)}>취소</button>
     </div>
   );
 }
