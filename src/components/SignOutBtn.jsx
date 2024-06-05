@@ -1,11 +1,9 @@
-import { useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 
 function SignOutBtn() {
-  const navigator = useNavigate();
   const signOut = async () => {
     await supabase.auth.signOut();
-    navigator('/');
+    window.location.reload(); // 로그아웃 후 페이지 새로고침
   };
 
   return (
