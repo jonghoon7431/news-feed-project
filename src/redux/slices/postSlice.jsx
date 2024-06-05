@@ -5,11 +5,11 @@ const initialState = {
   title : '',
   content :'',
   tag : [],
-  // images : [],
   previews : [],
   userEmail : '',
   titleError : '',
   contentError : '',
+  userId : '',
 }
 
 const postSlice = createSlice({
@@ -28,9 +28,6 @@ const postSlice = createSlice({
     setTag : (state, action) => {
       state.tag = action.payload
     },
-    // setImages : (state, action) => {
-    //   state.images = action.payload
-    // },
     setPreviews : (state, action) => {
       state.previews = action.payload
     },
@@ -43,6 +40,9 @@ const postSlice = createSlice({
     setContentError : (state, action) => {
       state.contentError = action.payload
     },
+    setUserId : (state, action) => {
+      state.userId = action.payload
+    }
   }
 })
 export const {
@@ -54,7 +54,8 @@ export const {
   setPreviews,
   setUserEmail,
   setTitleError,
-  setContentError
+  setContentError,
+  setUserId
 } = postSlice.actions
 
 export default postSlice.reducer
