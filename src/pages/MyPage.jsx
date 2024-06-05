@@ -1,11 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
+import styled from 'styled-components';
 import api from '../api/api';
 import DefaultProfileUrl from '../assets/profile.png';
 import PostItem from '../components/PostItem';
-import SignOutBtn from '../components/SignOutBtn';
 import supabase from '../supabaseClient';
-import styled from 'styled-components';
 
 function MyPage() {
   const [, setProfileImg] = useState([]);
@@ -98,7 +97,7 @@ function MyPage() {
     <MyPageCon>
       <MyPageArea>
         <ProfileArea>
-          <ProfileIcon className={`bg-[url('${DefaultProfileUrl}')]`}>
+          <ProfileIcon>
             {profileUrl ? (
               <img src={profileUrl} className="rounded-full" />
             ) : (
@@ -119,10 +118,7 @@ function MyPage() {
             )}
           </ProfileIcon>
           <ProfileInfo>
-            <ProfileId>
-              {user.email}
-              <SignOutBtn />
-            </ProfileId>
+            <ProfileId>{user.email}</ProfileId>
             <BlackHr1px />
             <ProfilePreview>내가 쓴 글 {myPosts.length}개</ProfilePreview>
           </ProfileInfo>
