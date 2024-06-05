@@ -4,7 +4,7 @@ import api from '../api/api';
 import pencil from '../assets/pencil.png';
 import PostList from '../components/PostList';
 import RecentPosts from '../components/RecentPosts';
-import { Search } from '../components/Search';
+import { SearchInput } from '../components/SearchInput';
 
 function Home() {
   const [searchedPosts, setSearchedPosts] = useState([]); // 검색 결과
@@ -17,13 +17,17 @@ function Home() {
   }, []);
 
   const handleSearch = async (keyword) => {
+    if (!keyword) {
+      setSearchedPosts([]);
+      return;
+    }
     const posts = await api.posts.search(keyword);
     setSearchedPosts(posts);
   };
 
   return (
     <main>
-      <Search handleSearch={handleSearch} />
+      <SearchInput handleSearch={handleSearch} />
       <section>
         {searchedPosts.length !== 0 ? (
           <PostList list={searchedPosts} />
