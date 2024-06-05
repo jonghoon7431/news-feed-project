@@ -1,26 +1,77 @@
 import { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import styled from 'styled-components';
 import api from '../api/api';
 import DefaultProfileUrl from '../assets/profile.png';
 import PostItem from '../components/PostItem';
 import SignOutBtn from '../components/SignOutBtn';
+import supabase from '../supabaseClient';
+import styled from 'styled-components';
 
 function MyPage() {
+  const [, setProfileImg] = useState([]);
+  const [userId, setUserId] = useState('');
   const [myPosts, setMyPosts] = useState([]);
   const [profileUrl, setProfileUrl] = useState('');
   const refFileUploader = useRef();
-  
-  // const [myIcon, setMyIcon] = useState();
 
-  // const handleChangeImg = (e) => {
-  //   const file = e.target.files[0];
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (user) {
+        setUserId(user.id);
+      }
+    };
+    fetchUserData();
+  }, []);
 
-  //   setMyIcon();
+  const handleProfileImage = async (files) => {
+    if (files.length === 0) {
+      alert('파일을 선택해 주세요.');
+      return;
+    }
 
-  //   // 클릭해서 파일 업로드하면 supabase에 올라가고, 동시에 그걸 내 프로필 사진으로 등록해 줘야 함< 1번 문제
-  // };
+    const profile = files[0]; // 첫 번째 파일만 업로드하도록 설정
+    const fileExt = profile.name.split('.').pop();
+    const fileName = `${Date.now()}-${Math.random()}.${fileExt}`;
+    const filePath = `${fileName}`;
 
+    const { error: storageError } = await supabase.storage.from('profileimg').upload(filePath, profile);
+
+    if (storageError) {
+      console.error('Storage error:', storageError.message);
+      alert('잘못된 접근입니다: ' + storageError.message);
+      return;
+    }
+
+    const { data, error: urlError } = supabase.storage.from('profileimg').getPublicUrl(filePath);
+
+    if (urlError) {
+      console.error('URL error:', urlError.message);
+      alert('잘못된 접근입니다: ' + urlError.message);
+      return;
+    }
+
+    const profileUrl = data.publicUrl;
+
+    const { error: dbError } = await supabase
+      .from('USER_PROFILE')
+      .insert([{ profile_url: profileUrl, user_id: userId }]);
+
+    if (dbError) {
+      console.error('Database error:', dbError.message);
+      alert('잘못된 접근입니다: ' + dbError.message);
+    } else {
+      alert('저장이 완료되었습니다');
+      setProfileImg([]);
+    }
+  };
+
+  const handleImageChange = (e) => {
+    const files = Array.from(e.target.files);
+    handleProfileImage(files);
+  };
   const contextUser = useSelector((state) => state.auth.signedInUser);
   const user = contextUser ?? {};
 
@@ -57,7 +108,13 @@ function MyPage() {
                   onClick={handleRequestFileUpload}
                   className="rounded-full cursor-pointer"
                 />
-                <input type="file" ref={refFileUploader} className="invisible" />
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  ref={refFileUploader}
+                  className="invisible"
+                />
               </>
             )}
           </ProfileIcon>
@@ -98,7 +155,7 @@ const MyPageArea = styled.div`
   background-color: #ffff;
 `;
 
-const ProfileArea = styled.div`
+const ProfileArea = styled.form`
   min-width: 100%;
   max-width: 100%;
   display: flex;
