@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 import PostItem from '../components/PostItem';
 import api from '../api/api';
-import Header from '../components/Header';
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -20,21 +19,33 @@ function MyPage() {
 
   const user = useSelector((state) => state.auth.signedInUser);
   const navigate = useNavigate();
-  if (!user) {
-    navigate('/');
-  }
+
+  // useEffect(() => {
+  //   const showMyPosts = async () => {
+  //     if (!user) {
+  //       navigate('/');
+  //     }
+  //     const posts = await api.posts.getMyPosts(user.id);
+  //     setMyPosts(posts);
+  //   };
+  //   showMyPosts();
+  // }, []);
 
   useEffect(() => {
-    const showMyPosts = async () => {
-      const posts = await api.posts.getMyPosts(user.id);
+    const fetchMyPosts = async () => {
+      if (!user) {
+        navigate('/');
+      }
+
+      const posts = await api.posts.getMyPosts(user.email);
       setMyPosts(posts);
     };
-    showMyPosts();
+
+    fetchMyPosts();
   }, []);
 
   return (
-    <MyPageCon>
-      <Header />
+    <>
       <MyPageArea>
         <ProfileArea>
           <ProfileIcon>
@@ -45,41 +56,29 @@ function MyPage() {
             <img src="../assets/profile.png" />
           </ProfileIcon>
           <ProfileInfo>
-            <ProfileId>
-              아이디abc
-              <button>로그아웃</button>
-            </ProfileId>
+            <ProfileId>{user && user.email}</ProfileId>
             <BlackHr1px />
-            <ProfilePreview>내가 쓴 글 1개</ProfilePreview>
+            <ProfilePreview>내가 쓴 글 {myPosts.length}개</ProfilePreview>
           </ProfileInfo>
         </ProfileArea>
-        <BlackHr1px />
-        <div className="postArea">
-          {' '}
-          {myPosts.map((myPost) => {
-            <PostItem post={myPost} />;
-          })}
-        </div>
+        <PostArea>
+          {myPosts.map((post) => (
+            <PostItem key={post.id} post={post} />
+          ))}
+        </PostArea>
       </MyPageArea>
-    </MyPageCon>
+    </>
   );
 }
-
-// 라벨은 테일윈드로 원하는 디자인 처리
-
-const MyPageCon = styled.div`
-  color: black;
-`;
-// 추후 정리되는 대로 삭제
 
 const MyPageArea = styled.div`
   min-width: 100%;
   max-width: 100%;
+  height: 100vh
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  background-color: #ffff;
 `;
 
 const ProfileArea = styled.div`
@@ -102,12 +101,12 @@ const ProfileIcon = styled.div`
 // W/H 26% 씩으로 해도 됨.
 
 const ProfileInfo = styled.div`
-  width: 35%;
+  width: 40%;
 `;
 
 const ProfileId = styled.div`
   padding: 0 0 0 3%;
-  font-size: 40px;
+  font-size: 35px;
   font-weight: 600;
 `;
 
@@ -124,6 +123,11 @@ const BlackHr1px = styled.div`
   border: none;
 `;
 
-export default MyPage;
+const PostArea = styled.div`
+  min-width: 100%;
+  max-width: 100%;
+  margin-top: 80px;
+  background: #f3f4f6;
+`;
 
-// 확인하고 싶을 때 주소/my_page
+export default MyPage;
