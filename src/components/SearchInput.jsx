@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import searchPng from '../assets/search.png';
 
-export function Search({ handleSearch }) {
-  const [searchText, setSearchText] = useState('');
+export function SearchInput({ handleSearch, defaultValue = '' }) {
+  const [searchText, setSearchText] = useState(defaultValue);
 
   return (
     <article className="flex justify-center items-center flex-1 pt-2 py-6">

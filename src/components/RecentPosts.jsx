@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import api from '../api/api';
 import PostList from './PostList';
 
-const POSTS_OFFSET = 13;
+const POSTS_ROWNUM = 13;
 
 function RecentPosts() {
   const [pageNo, setPageNo] = useState(0);
@@ -11,15 +11,12 @@ function RecentPosts() {
 
   useEffect(() => {
     (async () => {
-      api.posts.getRecentPosts({ startNo: pageNo, rownum: POSTS_OFFSET }).then((list) => {
+      api.posts.getRecentPosts({ startNo: pageNo, rownum: POSTS_ROWNUM }).then((list) => {
         if (list.length === 0) {
           setHasNextPage(false);
           return;
         }
-        setPosts((posts) => {
-          const newList = [...posts, ...list];
-          return newList;
-        });
+        setPosts((posts) => [...posts, ...list]);
       });
     })();
   }, [pageNo]);
@@ -31,7 +28,7 @@ function RecentPosts() {
     if (!hasNextPage || restScrollHeight > 5) {
       return;
     }
-    setPageNo((pageNo) => pageNo + POSTS_OFFSET + 1);
+    setPageNo((pageNo) => pageNo + POSTS_ROWNUM + 1);
   }, []);
 
   useEffect(() => {
