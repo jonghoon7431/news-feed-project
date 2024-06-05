@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import api from '../api/api';
 import pencil from '../assets/pencil.png';
 import PostList from '../components/PostList';
@@ -7,8 +7,8 @@ import RecentPosts from '../components/RecentPosts';
 import { SearchInput } from '../components/SearchInput';
 
 function Home() {
-  const [searchedPosts, setSearchedPosts] = useState([]); // 검색 결과
   const [popularPosts, setPopularPosts] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     (async () => {
@@ -17,26 +17,15 @@ function Home() {
   }, []);
 
   const handleSearch = async (keyword) => {
-    if (!keyword) {
-      setSearchedPosts([]);
-      return;
-    }
-    const posts = await api.posts.search(keyword);
-    setSearchedPosts(posts);
+    navigate(`/search/${keyword}`);
   };
 
   return (
     <main>
       <SearchInput handleSearch={handleSearch} />
       <section>
-        {searchedPosts.length !== 0 ? (
-          <PostList list={searchedPosts} />
-        ) : (
-          <>
-            <PostList title="인기 글" list={popularPosts} />
-            <RecentPosts title="최신 글" />
-          </>
-        )}
+        <PostList title="인기 글" list={popularPosts} />
+        <RecentPosts title="최신 글" />
       </section>
       <div className="flex justify-end items-center pr-3">
         <Link
