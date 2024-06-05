@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import styled from 'styled-components';
 import PostItem from '../components/PostItem';
 import api from '../api/api';
@@ -6,16 +5,16 @@ import Header from '../components/Header';
 import { useState, useEffect } from 'react';
 
 function MyPage() {
-  const [myPosts, setMyPosts] = useState([]);
-  const [myIcon, setMyIcon] = useState();
+  // const [myPosts, setMyPosts] = useState([]);
+  // const [myIcon, setMyIcon] = useState();
 
-  const handleChangeImg = (e) => {
-    const file = e.target.files[0];
+  // const handleChangeImg = (e) => {
+  //   const file = e.target.files[0];
 
-    setMyIcon();
+  //   setMyIcon();
 
-    // 클릭해서 파일 업로드하면 supabase에 올라가고, 동시에 그걸 내 프로필 사진으로 등록해 줘야 함< 1번 문제
-  };
+  //   // 클릭해서 파일 업로드하면 supabase에 올라가고, 동시에 그걸 내 프로필 사진으로 등록해 줘야 함< 1번 문제
+  // };
 
   useEffect(() => {
     async () => setMyPosts(await api.posts.getMyPosts());
@@ -23,14 +22,14 @@ function MyPage() {
 
   return (
     <MyPageCon>
+      <Header />
       <MyPageArea>
-        <Header />
         <ProfileArea>
           <ProfileIcon>
             <label htmlFor="profileFileUpload" id="profileFileUploadBtn">
               파일 업로드
             </label>
-            <input type="file" id="profileFileUpload" style={{ display: 'none' }} onChange={handleChangeImg} />
+            <input type="file" id="profileFileUpload" style={{ display: 'none' }} />
             <img src="../assets/profile.png" />
           </ProfileIcon>
           <ProfileInfo>
@@ -116,15 +115,3 @@ const BlackHr1px = styled.div`
 export default MyPage;
 
 // 확인하고 싶을 때 주소/my_page
-=======
-
-const MyPage = () => {
-  return (
-    <div>
-      
-    </div>
-  )
-}
-
-export default MyPage
->>>>>>> 4297d891e990f8f41ee620d328cca9f66be1934f

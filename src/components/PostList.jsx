@@ -17,7 +17,7 @@ function PostList({ title, list }) {
   }, []);
 
   return (
-    <section className="bg-gray-100 pl-3 py-3 mb-3 ">
+    <section className="bg-gray-100 pl-3 pr-2 py-3 mb-3 ">
       {title ? <h2 className="py-1 font-bold">{title}</h2> : ''}
       <ul className="py-3">
         {isLoading ? (
