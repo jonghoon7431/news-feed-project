@@ -1,10 +1,17 @@
-import supabase from '../supabaseClient';
+import { useNavigate } from 'react-router-dom';
+import supabase from '../../supabaseClient';
 
 function EditPost({ targetData, setTargetData, setIsEdit, postId }) {
+  const navigate = useNavigate();
   const { title, content, tag } = targetData;
 
   const onChangeHandler = (e) => {
-    setTargetData({ ...targetData, [e.target.name]: e.target.value });
+    if (e.target.name === 'tag') {
+      const tags = e.target.value.split(',').map((tag) => tag.trim());
+      setTargetData({ ...targetData, [e.target.name]: tags });
+    } else {
+      setTargetData({ ...targetData, [e.target.name]: e.target.value });
+    }
   };
 
   const editHandler = async () => {
@@ -13,6 +20,7 @@ function EditPost({ targetData, setTargetData, setIsEdit, postId }) {
       .update({
         title: title,
         content: content,
+        tag: tag,
       })
       .eq('id', postId);
     if (error) {
@@ -27,8 +35,15 @@ function EditPost({ targetData, setTargetData, setIsEdit, postId }) {
     <div>
       <input type="text" value={title} name="title" onChange={onChangeHandler} />
       <textarea type="text" value={content} name="content" onChange={onChangeHandler} />
-      <input type="text" value={tag} name="tag" onChange={onChangeHandler} />
+      <input
+        type="text"
+        value={tag}
+        name="tag"
+        onChange={onChangeHandler}
+        placeholder="태그는 ,를 기준으로 하나씩 작성 부탁드립니다"
+      />
       <button onClick={editHandler}>수정 완료</button>
+      <button onClick={() => setIsEdit(false)}>취소</button>
     </div>
   );
 }
