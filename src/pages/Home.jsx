@@ -33,8 +33,8 @@ function Home() {
           <PostList list={searchedPosts} />
         ) : (
           <>
-            <PostList title="인기" list={popularPosts} />
-            <RecentPosts />
+            <PostList title="인기 글" list={popularPosts} />
+            <RecentPosts title="최신 글" />
           </>
         )}
       </section>
