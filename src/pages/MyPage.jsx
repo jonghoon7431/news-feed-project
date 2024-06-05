@@ -17,43 +17,48 @@ function MyPage() {
     fetchUserData();
   }, []);
 
-  const handleProfileImage = async (e) => {
-    e.preventDefault();
-    const uploadedProfile = [];
-    for (let profile of profileImg) {
-      const fileExt = profile.name.split('.').pop();
-      const fileName = `${Date.now()}-${Math.random()}.${fileExt}`;
-      const filePath = `${fileName}`;
-
-      const { error: storageError } = await supabase.storage
-        .from('profileimg')
-        .upload(filePath, profile);
-
-      if (storageError) {
-        alert('잘못된 접근입니다');
-        return;
-      } else {
-        const { data, error: urlError } = supabase.storage
-          .from('profileimg')
-          .getPublicUrl(filePath);
-
-        if (urlError) {
-          alert('잘못된 접근입니다');
-          return;
-        }
-        uploadedProfile.push(data.publicUrl);
-      }
+  const handleProfileImage = async (files) => {
+    if (files.length === 0) {
+      alert('파일을 선택해 주세요.');
+      return;
     }
-    const profileUrlsString = JSON.stringify(uploadedProfile);
 
-    const { error } = await supabase
+    const profile = files[0]; // 첫 번째 파일만 업로드하도록 설정
+    const fileExt = profile.name.split('.').pop();
+    const fileName = `${Date.now()}-${Math.random()}.${fileExt}`;
+    const filePath = `${fileName}`;
+
+    const { error: storageError } = await supabase.storage
+      .from('profileimg')
+      .upload(filePath, profile);
+
+    if (storageError) {
+      console.error('Storage error:', storageError.message);
+      alert('잘못된 접근입니다: ' + storageError.message);
+      return;
+    }
+
+    const { data, error: urlError } = supabase.storage
+      .from('profileimg')
+      .getPublicUrl(filePath);
+
+    if (urlError) {
+      console.error('URL error:', urlError.message);
+      alert('잘못된 접근입니다: ' + urlError.message);
+      return;
+    }
+
+    const profileUrl = data.publicUrl;
+
+    const { error: dbError } = await supabase
       .from('USER_PROFILE')
       .insert([
-        { profile_url: profileUrlsString, user_id: userId }
+        { profile_url: profileUrl, user_id: userId }
       ]);
 
-    if (error) {
-      alert('잘못된 접근입니다');
+    if (dbError) {
+      console.error('Database error:', dbError.message);
+      alert('잘못된 접근입니다: ' + dbError.message);
     } else {
       alert('저장이 완료되었습니다');
       setProfileImg([]);
@@ -62,14 +67,12 @@ function MyPage() {
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
-    const newImage = [...profileImg, ...files];
-    setProfileImg(newImage);
+    handleProfileImage(files);
   }
-
   return (
     <MyPageCon>
       <MyPageArea>
-        <ProfileArea onSubmit={handleProfileImage}>
+        <ProfileArea>
           <ProfileIcon>
             <label htmlFor="profileFileUpload" id="profileFileUploadBtn">
               파일 업로드
