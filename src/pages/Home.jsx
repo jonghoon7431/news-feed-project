@@ -5,7 +5,6 @@ import pencil from '../assets/pencil.png';
 import PostList from '../components/PostList';
 import RecentPosts from '../components/RecentPosts';
 import { SearchSection } from '../components/Search';
-import supabase from '../supabaseClient';
 
 function Home() {
   const [searchedPosts, setSearchedPosts] = useState([]); // 검색 결과
@@ -25,13 +24,6 @@ function Home() {
   return (
     <>
       <article>
-        <button
-          onClick={async () => {
-            await supabase.auth.signOut();
-          }}
-        >
-          logout
-        </button>
         <SearchSection handleSearch={handleSearch} />
         <section>
           {searchedPosts.length !== 0 ? (
