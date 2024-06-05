@@ -1,7 +1,67 @@
-import React from 'react';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import SignInBtn from '../components/SignInBtn';
+import { supabase } from '../supabaseClient';
 
 function LogIn() {
-  return <div>LogIn</div>;
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+
+  const handleSignIn = async (e) => {
+    e.preventDefault();
+
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      setError('이메일 또는 비밀번호가 올바르지 않습니다.');
+    } else {
+      setError('');
+      alert('로그인되었습니다.');
+      setEmail('');
+      setPassword('');
+      navigate('/'); // 로그인 성공 시 홈페이지로 이동
+    }
+  };
+
+  return (
+    <main>
+      <form onSubmit={handleSignIn}>
+        <label>
+          이메일:
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="이메일을 입력하세요"
+            required
+          />
+        </label>
+        <br />
+        <label>
+          비밀번호:
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="비밀번호를 입력하세요"
+            required
+          />
+        </label>
+        <br />
+        <button type="submit">로그인</button>
+      </form>
+      <p>
+        아직 회원이 아니라면? <Link to="/sign_up">가입하러 가기</Link>
+      </p>
+      <SignInBtn />
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+    </main>
+  );
 }
 
 export default LogIn;

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import styled from 'styled-components';
 import PostItem from '../components/PostItem';
 import api from '../api/api';
@@ -115,3 +116,15 @@ const BlackHr1px = styled.div`
 export default MyPage;
 
 // 확인하고 싶을 때 주소/my_page
+=======
+
+const MyPage = () => {
+  return (
+    <div>
+      
+    </div>
+  )
+}
+
+export default MyPage
+>>>>>>> 4297d891e990f8f41ee620d328cca9f66be1934f
