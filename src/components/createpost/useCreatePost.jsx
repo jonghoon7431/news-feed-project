@@ -2,14 +2,14 @@ import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "../../../node_modules/react-redux/dist/react-redux";
 import { useNavigate } from "../../../node_modules/react-router-dom/dist/index";
 import supabase from "../../supabaseClient";
-import { setName, setTitle, setContent, setTag, setImages, setPreviews, setUserEmail, setTitleError, setContentError } from "../../redux/slices/postSlice";
+import { setName, setTitle, setContent, setTag, setImages, setPreviews, setUserEmail, setTitleError, setContentError, setUserId } from "../../redux/slices/postSlice";
 
 export const useCreatePost = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { title, content, tag, previews, userEmail, titleError, contentError } = useSelector((state) => state.post);
+  const { title, content, tag, previews, userEmail, titleError, contentError,userId } = useSelector((state) => state.post);
   const [images, setImages] = useState([])
-
+  const [disabled, setDisabled] = useState(false)
   const hashTagRef = useRef(null);
   const titleErrorRef = useRef('제목을 입력해주세요');
   const contentErrorRef = useRef('내용을 입력해주세요');
@@ -19,6 +19,7 @@ export const useCreatePost = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
         dispatch(setUserEmail(user.email));
+        dispatch(setUserId(user.id))
       }
     };
     fetchUserData();
@@ -76,12 +77,13 @@ export const useCreatePost = () => {
     const { error } = await supabase
       .from('POSTS')
       .insert([
-        { name: userEmail, title, content, tag, image_url: uploadedImageUrls },
+        { name: userEmail, title, content, tag, image_url: uploadedImageUrls, user_id : userId },
       ]);
 
     if (error) {
       alert('잘못된 접근입니다');
     } else {
+      setDisabled(true)
       alert('저장이 완료되었습니다 !');
       navigate('/');
       dispatch(setName(''));
@@ -91,6 +93,7 @@ export const useCreatePost = () => {
       dispatch(setPreviews([]));
       setImages([])
     }
+    setDisabled(false)
   };
 
   const handleImageChange = (e) => {
@@ -111,6 +114,7 @@ export const useCreatePost = () => {
   };
 
   return {
+    navigate,
     handleSubmit,
     handleImageChange,
     showHashTag,
@@ -123,5 +127,6 @@ export const useCreatePost = () => {
     userEmail,
     titleError,
     contentError,
+    disabled,
   };
 };
