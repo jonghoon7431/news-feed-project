@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import EditPost from '../components/EditPost';
 import Footer from '../components/Footer';
-import Header from '../components/Header';
 import ReadPost from '../components/ReadPost';
 import supabase from '../supabaseClient';
 
@@ -27,7 +26,6 @@ function Post() {
 
   return (
     <>
-      <Header />
       {isEdit ? (
         <EditPost targetData={targetData} setTargetData={setTargetData} setIsEdit={setIsEdit} postId={postId} />
       ) : (
