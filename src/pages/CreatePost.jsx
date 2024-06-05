@@ -65,7 +65,7 @@ function CreatePost() {
         .upload(filePath, image);
 
       if (storageError) {
-        console.error('Error uploading image:', storageError);
+        alert('잘못된 접근입니다')
         return;
       } else {
         const { data, error: urlError } = supabase
@@ -74,25 +74,23 @@ function CreatePost() {
           .getPublicUrl(filePath);
 
         if (urlError) {
-          console.error('Error getting public URL:', urlError);
+          alert('잘못된 접근입니다')
           return;
         }
-
         uploadedImageUrls.push(data.publicUrl);
       }
     }
 
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from('POSTS')
       .insert([
         { name : userEmail, title, content, tag , image_url: uploadedImageUrls }
       ]);
 
     if (error) {
-      console.error('Error inserting data:', error);
+      alert('잘못된 접근입니다')
     } else {
-      console.log('Data inserted:', data);
-      alert('Post added successfully!');
+      alert('저장이 완료되었습니다 !');
       navigate('/')
       setName('');
       setTitle('');
