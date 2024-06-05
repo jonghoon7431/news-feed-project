@@ -15,12 +15,13 @@ function CreatePost() {
     showHashTag,
     hashTagRef,
     navigate,
+    disabled,
   } = useCreatePost();
 
   return (
     <div>
       <Form handleSubmit={handleSubmit}>
-        <Top navigate={navigate}/>
+        <Top navigate={navigate} disabled={disabled}/>
         <Input />
         <ImageUpload handleImageChange={handleImageChange} />
         <HashTag hashTagRef={hashTagRef} showHashTag={showHashTag} />

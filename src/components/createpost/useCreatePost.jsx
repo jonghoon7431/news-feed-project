@@ -9,6 +9,7 @@ export const useCreatePost = () => {
   const dispatch = useDispatch();
   const { title, content, tag, previews, userEmail, titleError, contentError } = useSelector((state) => state.post);
   const [images, setImages] = useState([])
+  const [disabled, setDisabled] = useState(false)
   const hashTagRef = useRef(null);
   const titleErrorRef = useRef('제목을 입력해주세요');
   const contentErrorRef = useRef('내용을 입력해주세요');
@@ -81,6 +82,7 @@ export const useCreatePost = () => {
     if (error) {
       alert('잘못된 접근입니다');
     } else {
+      setDisabled(true)
       alert('저장이 완료되었습니다 !');
       navigate('/');
       dispatch(setName(''));
@@ -90,6 +92,7 @@ export const useCreatePost = () => {
       dispatch(setPreviews([]));
       setImages([])
     }
+    setDisabled(false)
   };
 
   const handleImageChange = (e) => {
@@ -123,5 +126,6 @@ export const useCreatePost = () => {
     userEmail,
     titleError,
     contentError,
+    disabled,
   };
 };
