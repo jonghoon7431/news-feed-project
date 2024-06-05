@@ -9,15 +9,17 @@ function ReadPost({ setIsEdit, targetData, paramsId }) {
   const navigate = useNavigate();
   const signedInUser = useSelector((state) => state.auth.signedInUser);
 
-  console.log(signedInUser);
   //!!: 값을 boolean 형태로
   const [isLoggedIn, setIsLoggedIn] = useState(!!signedInUser);
-  const [userId, setUserId] = useState(signedInUser.id || null);
+  const [userId, setUserId] = useState(null);
 
-  console.log(userId);
   useEffect(() => {
     setIsLoggedIn(!!signedInUser);
-    setUserId(signedInUser?.id || null);
+    if (signedInUser) {
+      setUserId(signedInUser.id);
+    } else {
+      setUserId(null);
+    }
   }, [signedInUser]);
 
   const { id, title, content, name, view, date, time, like, tag, image_url } = targetData;
@@ -43,43 +45,56 @@ function ReadPost({ setIsEdit, targetData, paramsId }) {
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(like);
 
+  //해당 게시물 해당 유저가 like 했는지 확인
   useEffect(() => {
     const checkLiked = async () => {
-      if (!isLoggedIn) return;
+      if (isLoggedIn) {
+        const { data, error } = await supabase
+          .from('LIKES')
+          .select('is_liked')
+          .eq('post_id', postId)
+          .eq('user_id', userId)
+          .single();
 
-      const { data, error } = await supabase
-        .from('LIKES')
-        .select('is_liked')
-        .eq('post_id', postId)
-        .eq('user_id', userId)
-        .single();
-
-      if (error) {
-        console.log(error);
-      } else {
-        setLiked(data.is_liked);
+        if (error) {
+          console.log(error);
+        } else {
+          setLiked(data.is_liked);
+        }
       }
     };
 
     checkLiked();
   }, [isLoggedIn, postId, userId]);
 
+  //like 수 가져오기
   useEffect(() => {
     const fetchLikeCount = async () => {
-      const { data, error } = await supabase.from('POSTS').select('like').eq('id', paramsId).single();
+      if (isLoggedIn) {
+        const { data, error } = await supabase.from('POSTS').select('like').eq('id', paramsId).single();
 
-      if (error) {
-        console.log(error);
-      } else {
-        setLikeCount(data.like);
+        if (error) {
+          console.log(error);
+        } else {
+          setLikeCount(data.like);
+        }
       }
     };
 
     fetchLikeCount();
-  }, [liked, paramsId]);
+  }, [isLoggedIn, liked, paramsId]);
 
+  //like 클릭 이벤트
+  // 클릭 시 post id,user id 대조해서 LIKES테이블에 관련 정보가 있으면 업데이트
+  //없으면 INSERT
   const isLikedHandler = async () => {
-    if (!isLoggedIn) return alert('로그인 후 이용 가능합니다');
+    if (!isLoggedIn) {
+      if (confirm('로그인 후 이용 가능합니다, 로그인 하시겠습니까?')) {
+        navigate('/login');
+      } else {
+        return;
+      }
+    }
 
     const newLikedStatus = !liked;
     setLiked(newLikedStatus);
@@ -159,7 +174,6 @@ function ReadPost({ setIsEdit, targetData, paramsId }) {
   }, [targetData.image_url]);
 
   // View 증가
-  // 즉시 적용은 안 되고, 새로고침하거나 다른 페이지로 이동하면 적용됨
   useEffect(() => {
     const updateView = async () => {
       try {
@@ -179,15 +193,15 @@ function ReadPost({ setIsEdit, targetData, paramsId }) {
   }, [paramsId, view]);
 
   return (
-    <Container>
-      <TitleSection>
-        <h1>{title}</h1>
-        <WriterInfoDiv>
-          <p>{name}</p>
-          <p>
+    <article className="bg-white overflow-auto whitespace-pre-wrap break-words h-screen">
+      <TitleSection className="flex flex-col flex-1 gap-2 justify-center py-4 px-4">
+        <h1 className="pl-px text-2xl">{title}</h1>
+        <div className="flex justify-between items-center mt-4">
+          <p className="pl-3 font-bold text-base">{name}</p>
+          <p className="text-base">
             {date} {time}
           </p>
-        </WriterInfoDiv>
+        </div>
       </TitleSection>
 
       <ContentSection>
@@ -207,14 +221,14 @@ function ReadPost({ setIsEdit, targetData, paramsId }) {
           <FontAwesomeIcon icon="fa-solid fa-heart" className="heart" onClick={isLikedHandler} />
           {likeCount}
         </ReactionDiv>
-        {/* TODO 태그 저장 방식 변경해야함 */}#{tag}
+        {tag && Array.isArray(tag) && tag.length > 0 ? tag.map((t, index) => <span key={index}>#{t} </span>) : null}
       </ReactionSection>
 
       <ButtonSection>
         <BackButton onClick={() => navigate(-1)}>뒤로가기</BackButton>
         <WriteButton onClick={() => navigate('/create_post')}>글쓰기</WriteButton>
       </ButtonSection>
-    </Container>
+    </article>
   );
 }
 
@@ -226,28 +240,9 @@ const Container = styled.div`
 `;
 
 const TitleSection = styled.section`
-  height: 10vh;
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  gap: 0.5rem;
-  justify-content: center;
-  padding: 1rem 2rem;
   border-bottom: 1px solid black;
-  & h1 {
-    font-size: 2rem;
-    font-weight: bold;
-  }
-  & p {
-    font-size: 1rem;
-  }
 `;
-const WriterInfoDiv = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 1rem;
-`;
+const WriterInfoDiv = styled.div``;
 
 const ContentSection = styled.section`
   height: auto;
