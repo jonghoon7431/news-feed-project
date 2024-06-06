@@ -49,5 +49,4 @@ function HomeButtons({ isLogIn }) {
     </>
   );
 }
-
 export default Layout;
