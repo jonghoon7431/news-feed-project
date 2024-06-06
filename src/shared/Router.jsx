@@ -1,28 +1,48 @@
-import React from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Layout from '../components/Layout.jsx';
+import { createBrowserRouter } from 'react-router-dom';
+import Layout from '../components/Layout';
 import CreatePost from '../pages/CreatePost';
 import Home from '../pages/Home';
 import LogIn from '../pages/LogIn';
 import MyPage from '../pages/MyPage';
 import Post from '../pages/Post';
-import SignIn from '../pages/SignIn';
+import SearchPage from '../pages/SearchPage';
+import SignUp from '../pages/SignUp';
 
-const Router = () => {
-  return (
-    <BrowserRouter>
-      <Layout>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<LogIn />} />
-          <Route path="/sign_in" element={<SignIn />} />
-          <Route path="/create_post" element={<CreatePost />} />
-          <Route path="/post/:id" element={<Post />} />
-          <Route path="/my_page" element={<MyPage />} />
-        </Routes>
-      </Layout>
-    </BrowserRouter>
-  );
-};
+const router = createBrowserRouter([
+  {
+    element: <Layout />,
+    children: [
+      {
+        path: '/',
+        element: <Home />,
+      },
+      {
+        path: '/login',
+        element: <LogIn />,
+      },
+      {
+        path: '/sign_up',
+        element: <SignUp />,
+      },
 
-export default Router;
+      {
+        path: '/create_post/',
+        element: <CreatePost />,
+      },
+      {
+        path: '/post/:id',
+        element: <Post />,
+      },
+      {
+        path: '/my_page',
+        element: <MyPage />,
+      },
+      {
+        path: '/search/:keyword',
+        element: <SearchPage />,
+      },
+    ],
+  },
+]);
+
+export default router;

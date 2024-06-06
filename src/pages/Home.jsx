@@ -1,24 +1,43 @@
-import React, { useEffect } from 'react';
-import supabase from '../supabaseClient';
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
+import api from '../api/api';
+import pencil from '../assets/pencil.png';
+import PostList from '../components/PostList';
+import RecentPosts from '../components/RecentPosts';
+import { SearchInput } from '../components/SearchInput';
 
 function Home() {
-  useEffect(() => {
-    const fetchData = async () => {
-      const { data, error } = await supabase.from('POSTS').select('*');
+  const [popularPosts, setPopularPosts] = useState([]);
+  const user = useSelector((state) => state.auth.signedInUser);
+  const navigate = useNavigate();
 
-      if (error) {
-        console.log(error);
-      } else {
-        console.log(data);
-      }
-    };
-    fetchData();
+  useEffect(() => {
+    (async () => {
+      setPopularPosts(await api.posts.getPopularPosts());
+    })();
   }, []);
 
+  const handleSearch = async (keyword) => {
+    navigate(`/search/${keyword}`);
+  };
+
   return (
-    <div>
-      <h3>user info </h3>
-    </div>
+    <main>
+      <SearchInput handleSearch={handleSearch} />
+      <section>
+        <PostList title="인기 글" list={popularPosts} />
+        <RecentPosts title="최신 글" />
+      </section>
+      <div className="flex justify-end items-center pr-3">
+        <Link
+          to={user ? '/create_post' : '/login'}
+          className="fixed bottom-3 rounded w-10 h-10 flex justify-center items-center bg-gray-300 hover:bg-white"
+        >
+          <img src={pencil} className="w-8 hover:opacity-80" />
+        </Link>
+      </div>
+    </main>
   );
 }
 
