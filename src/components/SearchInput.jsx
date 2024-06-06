@@ -1,8 +1,8 @@
 import { useCallback, useState } from 'react';
 import searchPng from '../assets/search.png';
 
-export function SearchInput({ handleSearch }) {
-  const [searchText, setSearchText] = useState('');
+export function SearchInput({ handleSearch, value }) {
+  const [searchText, setSearchText] = useState(value);
 
   const handleKeydown = useCallback((code, text) => {
     if (code !== 'Enter') {

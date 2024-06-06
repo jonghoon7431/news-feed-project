@@ -3,10 +3,10 @@ import Layout from '../components/Layout';
 import CreatePost from '../pages/CreatePost';
 import Home from '../pages/Home';
 import LogIn from '../pages/LogIn';
-import SignUp from '../pages/SignUp';
-import Post from '../pages/Post';
 import MyPage from '../pages/MyPage';
-
+import Post from '../pages/Post';
+import SearchPage from '../pages/SearchPage';
+import SignUp from '../pages/SignUp';
 
 const router = createBrowserRouter([
   {
@@ -24,7 +24,7 @@ const router = createBrowserRouter([
         path: '/sign_up',
         element: <SignUp />,
       },
-  
+
       {
         path: '/create_post/',
         element: <CreatePost />,
@@ -36,6 +36,10 @@ const router = createBrowserRouter([
       {
         path: '/my_page',
         element: <MyPage />,
+      },
+      {
+        path: '/search/:keyword',
+        element: <SearchPage />,
       },
     ],
   },

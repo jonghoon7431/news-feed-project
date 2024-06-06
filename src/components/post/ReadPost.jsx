@@ -9,7 +9,7 @@ function ReadPost({ setIsEdit, targetData, postId, isEdit }) {
   const navigate = useNavigate();
   const signedInUser = useSelector((state) => state.auth.signedInUser);
 
-  const { id, title, content, name, view, date, time, like, tag, image_url, user_id } = targetData;
+  const { id, title, content, name, view, created_at, like, tag, image_url, user_id } = targetData;
   const postUserId = user_id;
 
   //!!: 값을 boolean 형태로
@@ -116,8 +116,11 @@ function ReadPost({ setIsEdit, targetData, postId, isEdit }) {
       console.error(error);
     } else {
       const { data: postData, error: postError } = await supabase
+        //posts 테이블에서
         .from('POSTS')
+        // like 컬럼
         .select('like')
+        //
         .eq('id', postId)
         .single();
 
@@ -181,77 +184,69 @@ function ReadPost({ setIsEdit, targetData, postId, isEdit }) {
     }
   }, [postId, view]);
 
+  //글 작성 버튼 눌렀을 경우의 유효성검사 및 로그인 페이지로 이동
+  const onMoveToCreatePost = () => {
+    if (!isLoggedIn) {
+      if (confirm('로그인 후 이용 가능합니다. 로그인 하시겠어요?')) {
+        return navigate('/login');
+      } else {
+        return;
+      }
+    }
+    navigate('/create_post');
+  };
+
   return (
-    <article className="bg-white overflow-auto whitespace-pre-wrap break-words h-screen">
-      <TitleSection className="flex flex-col flex-1 gap-2 justify-center py-4 px-4">
-        <h1 className="pl-px text-2xl">{title}</h1>
+    <article className="overflow-auto whitespace-pre-wrap break-words">
+      <section className=" bg-gray-200 flex flex-col flex-1 gap-2 justify-center py-4 px-4 mb-3">
+        <h1 className="pl-3 text-2xl">{title}</h1>
         <div className="flex justify-between items-center mt-4">
           <p className="pl-3 font-bold text-base">{name}</p>
-          <p className="text-base">
-            {date} {time}
-          </p>
+          <p className="text-base font-bold">{created_at}</p>
         </div>
-      </TitleSection>
+      </section>
 
-      <ContentSection>
+      <section className="bg-gray-200 h-auto p-8 border-b border-black mb-3">
+        <EditButtonDiv $editAuthority={isLoggedIn && postUserId === userId} className="mb-4">
+          <button onClick={() => setIsEdit(true)}>수정</button> | <button onClick={handleDelete}>삭제</button>
+        </EditButtonDiv>
         {imageUrls.length > 0
           ? imageUrls.map((url, index) => <img key={index} src={url} alt={`post-image-${index}`} />)
           : null}
 
-        <p>{content}</p>
-        <EditButtonDiv $editAuthority={isLoggedIn && postUserId === userId}>
-          <button onClick={() => setIsEdit(true)}>수정</button> | <button onClick={handleDelete}>삭제</button>
-        </EditButtonDiv>
-      </ContentSection>
+        <p className="text-lg leading-loose">{content}</p>
+      </section>
 
-      <ReactionSection>
+      <ReactionSection className=" h-[15vh] flex flex-col pt-4 pl-8 pb-0 border-b border-black">
         <ReactionDiv $isLiked={liked}>
-          조회수 : {view}
-          <FontAwesomeIcon icon="fa-solid fa-heart" className="heart" onClick={isLikedHandler} />
-          {likeCount}
+          <div className="mb-3 font-bold">조회수 : {view}</div>
+          <div className="font-bold">
+            <FontAwesomeIcon icon="fa-solid fa-heart" className="heart" onClick={isLikedHandler} /> {likeCount}
+          </div>
         </ReactionDiv>
-        {tag && !isEdit && tag.length > 0 ? tag.map((item, index) => <span key={index}>#{item} </span>) : null}
+        <div className="flex-row font-bold">
+          {tag && !isEdit && tag.length > 0 ? tag.map((item, index) => <span key={index}>#{item} </span>) : null}
+        </div>
       </ReactionSection>
 
-      <ButtonSection>
-        <BackButton onClick={() => navigate(-1)}>뒤로가기</BackButton>
-        <WriteButton onClick={() => navigate('/create_post')}>글쓰기</WriteButton>
-      </ButtonSection>
+      <section className="h-[10vh] flex justify-center items-center gap-[2vw]">
+        <button className="cursor-pointer text-2xl py-2 px-4 text-[1.4rem] font-bold" onClick={() => navigate(-1)}>
+          홈
+        </button>
+        <button className="cursor-pointer text-2xl py-2 px-4 text-[1.4rem] font-bold" onClick={onMoveToCreatePost}>
+          글 작성
+        </button>
+      </section>
     </article>
   );
 }
 
-const Container = styled.div`
-  background-color: white;
-  overflow: auto;
-  white-space: pre-wrap;
-  word-wrap: break-word;
-`;
-
-const TitleSection = styled.section`
-  border-bottom: 1px solid black;
-`;
-const WriterInfoDiv = styled.div``;
-
-const ContentSection = styled.section`
-  height: auto;
-  padding: 2rem;
-  border-bottom: 1px solid black;
-  & p {
-    font-size: 1.2rem;
-    line-height: 130%;
-  }
-`;
 const EditButtonDiv = styled.div`
   display: ${(props) => (props.$editAuthority ? 'flex' : 'none')};
   justify-content: end;
 `;
 
 const ReactionSection = styled.section`
-  height: 10vh;
-  display: flex;
-  flex-direction: column;
-  padding: 1rem 0 0 2rem;
   border-bottom: 1px solid black;
 `;
 const ReactionDiv = styled.div`
@@ -264,20 +259,4 @@ const ReactionDiv = styled.div`
   }
 `;
 
-const ButtonSection = styled.div`
-  height: 10vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 2vw;
-  & button {
-    cursor: pointer;
-    font-size: 2rem;
-    padding: 0.5rem 1rem;
-    font-size: 1.8rem;
-  }
-`;
-
-const BackButton = styled.button``;
-const WriteButton = styled.button``;
 export default ReadPost;
