@@ -118,9 +118,9 @@ function MyPage() {
             )}
           </div>
           <div className="w-2/5">
-            <div className="font-semibold text-4xl">{user && user.email}</div>
-            <div className="bg-black h-0.5 mt-3 mb-1" />
-            <div className="font-semibold text-xl">내가 쓴 글 {myPosts.length}개</div>
+            <div className="font-semibold text-xl">{user && user.email}</div>
+            <div className="bg-black h-0.5 mt-1 mb-0.5" />
+            <div className="font-semibold text-base">내가 쓴 글 {myPosts.length}개</div>
           </div>
         </div>
         <div className="min-w-full max-w-full min-h-70vh mt-20">
