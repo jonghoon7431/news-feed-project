@@ -95,9 +95,9 @@ function MyPage() {
 
   return (
     <>
-      <div className="min-w-full max-w-full flex items-center justify-center flex-col">
-        <div className="min-w-full max-w-full max-h-20vh flex items-center justify-center">
-          <div className="w-1/4 h-1/4 flex items-center justify-center rounded-full my-0 mr-5 ">
+      <div className="min-w-full max-w-full h-[100vh] flex items-center justify-center flex-col">
+        <div className="min-w-full max-w-full h-2/10 flex items-center justify-center">
+          <div className="w-44 h-44 flex items-center justify-center rounded-full my-0 mr-5 ">
             {profileUrl ? (
               <img src={profileUrl} className="rounded-full h-full w-full" />
             ) : (
@@ -123,7 +123,7 @@ function MyPage() {
             <div className="font-semibold text-base">내가 쓴 글 {myPosts.length}개</div>
           </div>
         </div>
-        <div className="min-w-full max-w-full min-h-70vh mt-20">
+        <div className="min-w-full max-w-full h-4/5 mt-14 bg-gray-100">
           <PostList title="내가 작성한 글" list={myPosts} />
         </div>
       </div>
