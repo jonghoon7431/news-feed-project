@@ -65,7 +65,7 @@ function ReadPost({ setIsEdit, targetData, postId, isEdit }) {
     };
 
     checkLiked();
-  }, [isLoggedIn, postId, userId]);
+  }, [isLoggedIn, postId, userId, liked]);
 
   //like 수 가져오기
   useEffect(() => {
@@ -212,7 +212,7 @@ function ReadPost({ setIsEdit, targetData, postId, isEdit }) {
         <ReactionDiv $isLiked={liked}>
           <div className="mb-3 font-bold">조회수 : {view}</div>
           <div className="font-bold">
-            <FontAwesomeIcon icon="fa-solid fa-heart" className="heart" onClick={isLikedHandler} /> {likeCount}
+            <FontAwesomeIcon icon="fa-solid fa-heart" className="heart" onClick={isLikedHandler} /> {like}
           </div>
         </ReactionDiv>
         <div className="flex-row font-bold">
@@ -222,7 +222,7 @@ function ReadPost({ setIsEdit, targetData, postId, isEdit }) {
 
       <section className="h-[10vh] flex justify-center items-center gap-[2vw]">
         <button className="cursor-pointer text-2xl py-2 px-4 text-[1.4rem] font-bold" onClick={() => navigate(-1)}>
-          홈
+          뒤로가기
         </button>
         <button className="cursor-pointer text-2xl py-2 px-4 text-[1.4rem] font-bold" onClick={onMoveToCreatePost}>
           글 작성
