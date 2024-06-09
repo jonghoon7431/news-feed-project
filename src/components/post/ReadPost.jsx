@@ -115,11 +115,8 @@ function ReadPost({ setIsEdit, targetData, postId, isEdit }) {
       console.error(error);
     } else {
       const { data: postData, error: postError } = await supabase
-        //posts 테이블에서
         .from('POSTS')
-        // like 컬럼
         .select('like')
-        //
         .eq('id', postId)
         .single();
 
