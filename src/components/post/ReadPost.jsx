@@ -112,7 +112,7 @@ function ReadPost({ setIsEdit, targetData, postId, isEdit }) {
       .select();
 
     if (error) {
-      console.error(error);
+      alert('잠시 후 다시 시도해주세요');
     } else {
       const { data: postData, error: postError } = await supabase
         .from('POSTS')
@@ -120,24 +120,19 @@ function ReadPost({ setIsEdit, targetData, postId, isEdit }) {
         .eq('id', postId)
         .single();
 
-      if (postError) {
-        console.error(postError);
+      const newLikeCount = newLikedStatus ? postData.like + 1 : postData.like - 1;
+
+      const { data: updatedPostData, error: updateError } = await supabase
+        .from('POSTS')
+        .update({ like: newLikeCount })
+        .eq('id', postId)
+        .select()
+        .single();
+
+      if (updateError) {
+        alert('적용 실패. 새로고침 후 다시 시도해주세요');
       } else {
-        const newLikeCount = newLikedStatus ? postData.like + 1 : postData.like - 1;
-
-        const { data: updatedPostData, error: updateError } = await supabase
-          .from('POSTS')
-          .update({ like: newLikeCount })
-          .eq('id', postId)
-          .select()
-          .single();
-
-        if (updateError) {
-          console.error(updateError);
-          alert('잠시 후 다시 시도해주세요');
-        } else {
-          setLikeCount(updatedPostData.like);
-        }
+        setLikeCount(updatedPostData.like);
       }
     }
   };
