@@ -75,7 +75,6 @@ function ReadPost({ setIsEdit, targetData, postId, isEdit }) {
 
         if (error) {
           console.error(error);
-          alert('좋아요 수를 가져오는데에 일시적 오류가 발생했습니다');
         } else {
           setLikeCount(data.like);
         }
@@ -83,7 +82,7 @@ function ReadPost({ setIsEdit, targetData, postId, isEdit }) {
     };
 
     fetchLikeCount();
-  }, [isLoggedIn, liked, postId]);
+  }, [isLoggedIn, liked, postId, likeCount]);
 
   //like 클릭 이벤트
   // 클릭 시 post id,user id 대조해서 LIKES테이블에 관련 정보가 있으면 업데이트
